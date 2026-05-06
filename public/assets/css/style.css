@@ -558,6 +558,9 @@ body.bg-pastel {
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
+    text-decoration: none; 
+    display: inline-block; 
+    text-align: center;
 }
 .btn-brown:hover {
     background-color: var(--dark-brown);

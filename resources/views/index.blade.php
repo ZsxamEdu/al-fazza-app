@@ -34,120 +34,30 @@
     <section class="new-bakery">
         <h2 class="section-title" >Bakery Terbaru</h2>
         <div class="product-grid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Cheese</h3>
-                        <span>Kue Bolu</span>
+            @foreach($products as $p)
+                <div class="card">
+                    <div class="card-header">
+                        <div class="title-cat">
+                            <h3>{{ $p->nama }}</h3>
+                            <span>{{ ucfirst($p->kategori) }}</span>
+                        </div>
+                    </div>
+                    <div class="card-img-wrapper">
+                        <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
+                        <img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}">
+                    </div>
+                    <div class="card-footer">
+                        <!-- Memformat angka menjadi rupiah -->
+                        <p>Rp {{ number_format($p->harga, 0, ',', '.') }}</p>
+                        <div>
+                            <!-- Tombol beli tetap memanggil fungsi JS -->
+                            <button class="btn-add-cart" onclick="addToCart('{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
+                            <!-- Link detail sekarang pakai format rute parameter (contoh: /detail/1) -->
+                            <a href="{{ url('/detail/' . $p->id) }}" class="btn-brown text-center block">Detail</a>
+                        </div>
                     </div>
                 </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/bolu/1-bolukeju.png') }}" alt="Cheese Cake">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 13.500</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Cheese Cake', 13600, '{{ asset('assets/img/bolu/1-bolukeju.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=1') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Meses</h3>
-                        <span>Kue Bolu</span>
-                    </div>
-                </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/bolu/2-bolumeses.png') }}" alt="Meses">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 11.900</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Meses', 11900, '{{ asset('assets/img/bolu/2-bolumeses.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=2') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Coffee Raisin</h3>
-                        <span>Bolu Puding</span>
-                    </div>
-                </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/bolu/3-bolupuding.png') }}" alt="Coffee Raisin">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 31.700</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Coffee Raisin', 31700, '{{ asset('assets/img/bolu/3-bolupuding.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=3') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Roti Coklat</h3>
-                        <span>Roti</span>
-                    </div>
-                </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/roti/9-roti-coklat.png') }}" alt="Roti Coklat">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 11.000</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Roti Coklat', 11000, '{{ asset('assets/img/roti/9-roti-coklat.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=45') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Coklat</h3>
-                        <span>Bolu Coklat</span>
-                    </div>
-                </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/bolu/4-bolucoklat.png') }}" alt="Coklat">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 79.500</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Coklat', 79500, '{{ asset('assets/img/bolu/4-bolucoklat.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=4') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="title-cat">
-                        <h3>Chiffon Pandan</h3>
-                        <span>Bolu Pandan</span>
-                    </div>
-                </div>
-                <div class="card-img-wrapper">
-                    <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
-                    <img src="{{ asset('assets/img/bolu/5-bolupandan.png') }}" alt="Chiffon Pandan">
-                </div>
-                <div class="card-footer">
-                    <p>Rp 76.500</p>
-                    <div>
-                        <button class="btn-add-cart" onclick="addToCart('Chiffon Pandan', 76500, '{{ asset('assets/img/bolu/5-bolupandan.png') }}')">Beli</button>
-                        <button class="btn-brown" onclick="window.location.href='{{ url('/detail?id=5') }}'">Detail</button>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </section>
 

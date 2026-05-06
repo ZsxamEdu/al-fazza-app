@@ -1,15 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
 
-Route::get('/', function () {
-    return view('index');
-});
+// 1. Rute Dinamis (Mengambil data roti dari Database menggunakan Controller)
+Route::get('/', [ProductController::class, 'index']);
+Route::get('/kategori', [ProductController::class, 'kategori']);
+Route::get('/detail/{id}', [ProductController::class, 'detail']);
 
-Route::get('/kategori', function () {
-    return view('kategori');
-});
-
+// 2. Rute Statis (Hanya menampilkan view dasar, belum butuh data dari database)
 Route::get('/about', function () {
     return view('about');
 });
@@ -20,8 +19,4 @@ Route::get('/checkout', function () {
 
 Route::get('/custom-order', function () {
     return view('custom-order');
-});
-
-Route::get('/detail', function () {
-    return view('detail');
 });

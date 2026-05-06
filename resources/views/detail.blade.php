@@ -4,18 +4,19 @@
     <main class="container-detail">
         <section class="main-info">
             <div class="product-gallery">
-                <img id="product-img" src="" alt="Produk">
+                <img id="product-img" src="{{ asset($kue->gambar) }}" alt="{{ $kue->nama }}">
             </div>
 
             <div class="product-order">
                 <div class="title-row">
-                    <h1 id="product-title">Loading...</h1>
+                    <h1>{{ $kue->nama }}</h1>
                 </div>
-                <p id="product-tagline" class="tagline">Soft Cheese Long Bread - Premium Creamy Filling</p>
-                <h2 id="product-price" class="price">Rp 0</h2>
+                <p class="tagline">{{ $kue->nama }} - {{ $kue->tipe }}</p>
+                <h2 class="price">Rp {{ number_format($kue->harga, 0, ',', '.') }}</h2>
 
                 <div class="order-controls">
-                    <button class="btn-primary-cart">Tambahkan ke Keranjang</button>
+                    <!-- Tombol beli mengambil QTY dari input -->
+                    <button class="btn-primary-cart" onclick="let qty = parseInt(document.getElementById('qty').value) || 1; addToCart('{{ $kue->nama }}', {{ $kue->harga }}, '{{ asset($kue->gambar) }}', qty)">Tambahkan ke Keranjang</button>
                     <div class="qty-input">
                         <button onclick="changeQty(-1)">-</button>
                         <input type="number" id="qty" value="1" min="1" readonly>
@@ -26,23 +27,18 @@
                 <div class="info-dropdown">
                     <details open>
                         <summary>Informasi Produk <i class="fas fa-chevron-down arrow-icon"></i></summary>
-                        
                         <hr class="info-divider">
-
                         <div class="content">
-                            <p><strong><i class="fa-solid fa-wheat-awn"></i> Bahan Utama:</strong> <span id="bahan">Keju Cheddar Premium & Cream Cheese</span></p>
-                            
+                            <p><strong><i class="fa-solid fa-wheat-awn"></i> Bahan Utama:</strong> <span>{{ $kue->bahan ?? 'Informasi bahan belum tersedia.' }}</span></p>
                             <hr class="info-divider">
-                            
-                            <p><strong><i class="fa-solid fa-jar"></i> Saran Penyimpanan:</strong> Simpan dalam wadah tertutup rapat. Tahan 2 hari di suhu ruang, 4-5 hari di dalam lemari pendingin. Hindari paparan sinar matahari langsung agar keju tidak kering.</p>
-                            
+                            <p><strong><i class="fa-solid fa-jar"></i> Saran Penyimpanan:</strong> Simpan dalam wadah tertutup rapat. Tahan 2 hari di suhu ruang, 4-5 hari di dalam lemari pendingin.</p>
                             <hr class="info-divider">
                         </div>
                     </details>
                     <details open>
                         <summary>Tentang Produk <i class="fas fa-chevron-down arrow-icon"></i></summary>
                         <div class="content">
-                            <p id="product-description">Deskripsi lengkap..</p>
+                            <p>{{ $kue->deskripsi ?? 'Deskripsi lengkap belum tersedia.' }}</p>
                         </div>
                     </details>
                 </div>
@@ -124,7 +120,28 @@
 
         <section class="recommendation">
             <h1 class="recommendation-title">Mungkin Anda Suka</h1>
-            <div id="recommendation-grid"></div>
+            <div id="recommendation-grid">
+                @foreach($rekomendasi as $item)
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="title-cat">
+                                <h3>{{ $item->nama }}</h3>
+                                <span>{{ $item->tipe }}</span>
+                            </div>
+                        </div>
+                        <div class="card-img-wrapper">
+                            <div class="rating"><i class="fa-solid fa-star"></i>{{ $item->rating }}</div>
+                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}">
+                        </div>
+                        <div class="card-footer">
+                            <p>Rp {{ number_format($item->harga, 0, ',', '.') }}</p>
+                            <div>
+                                <a href="{{ url('/detail/' . $item->id) }}" class="btn-brown" style="width: 100%; display: block; text-align: center;">Detail</a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </section>
     </main>
 @endsection

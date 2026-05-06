@@ -16,10 +16,31 @@
         </div>
 
         
-        <div class="kategori-grid" id="kategori-grid">
+        <div class="kategori-grid">
+            @foreach($products as $p)
+                <div class="card">
+                    <div class="card-header">
+                        <div class="title-cat">
+                            <h3>{{ $p->nama }}</h3>
+                            <span>{{ $p->tipe }}</span>
+                        </div>
+                    </div>
+                    <div class="card-img-wrapper">
+                        <div class="rating"><i class="fa-solid fa-star"></i>{{ $p->rating }}</div>
+                        <img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}">
+                    </div>
+                    <div class="card-footer">
+                        <p>Rp {{ number_format($p->harga, 0, ',', '.') }}</p>
+                        <div>
+                            <button class="btn-add-cart" onclick="addToCart('{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
+                            <a href="{{ url('/detail/' . $p->id) }}" class="btn-brown">Detail</a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
         <div class="kategori-header">
-            <h3 id="judul-kategori"></h3>
+            <h3>{{ $judul }}</h3>
         </div>
     </main>
     

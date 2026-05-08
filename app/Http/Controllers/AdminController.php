@@ -234,4 +234,19 @@ class AdminController extends Controller
 
         return redirect()->route('admin.stok.index')->with('success', 'Riwayat stok berhasil dicatat dan stok produk telah diperbarui!');
     }
+
+    public function laporanIndex()
+    {
+        // 1. Ambil semua transaksi yang sukses (Lunas), urutkan dari yang paling baru
+        $transaksi = Transaction::where('payment_status', 'success')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+
+        // 2. Hitung total pendapatan dan total jumlah transaksi
+        $totalPendapatan = $transaksi->sum('total_amount');
+        $totalTransaksi = $transaksi->count();
+
+        return view('admin.laporan.index', compact('transaksi', 'totalPendapatan', 'totalTransaksi'));
+    }
+
 }

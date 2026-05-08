@@ -42,6 +42,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/stok', [AdminController::class, 'stokIndex'])->name('admin.stok.index'); // Tampil Riwayat
     Route::get('/admin/stok/tambah', [AdminController::class, 'stokCreate'])->name('admin.stok.create'); // Form Catat Stok
     Route::post('/admin/stok', [AdminController::class, 'stokStore'])->name('admin.stok.store'); // Proses Simpan & Update Stok
+
+    Route::get('/admin/laporan', [AdminController::class, 'laporanIndex'])->name('admin.laporan.index');
+
 });
 
 // 3. Rute Khusus Kasir

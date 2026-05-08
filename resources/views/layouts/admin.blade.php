@@ -25,9 +25,10 @@
         <a href="{{ route('admin.stok.index') }}" class="{{ request()->routeIs('admin.stok.*') ? 'active' : '' }}">
             <i class="fa-solid fa-boxes-stacked"></i> Kelola Stok
         </a>
-        <a href="#">
+        <a href="{{ route('admin.laporan.index') }}" class="{{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
             <i class="fa-solid fa-chart-line"></i> Laporan Keuangan
         </a>
+
         
         <br>
         <form action="{{ route('logout') }}" method="POST">

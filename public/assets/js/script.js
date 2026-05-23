@@ -454,11 +454,12 @@ function payNow() {
 
     // 3. Ambil data formulir pembeli
     let namaPembeli = document.getElementById('nama')?.value;
+    let emailPembeli = document.getElementById('email')?.value; // Tambahan email
     let noHp = document.getElementById('nohp')?.value;
     let alamat = document.getElementById('alamat')?.value;
 
-    if (!namaPembeli || !noHp || !alamat) {
-        return alert('Mohon lengkapi Nama, No HP, dan Alamat Pengiriman!');
+    if (!namaPembeli || !emailPembeli || !noHp || !alamat) {
+        return alert('Mohon lengkapi Nama, Email, No HP, dan Alamat Pengiriman!');
     }
 
     // 4. Ambil CSRF Token dari tag <meta> di layout utama
@@ -478,6 +479,7 @@ function payNow() {
             total_price: grandTotal, 
             items: cart,
             customer_name: namaPembeli,
+            customer_email: emailPembeli, // Data email dikirim ke Laravel
             customer_phone: noHp,
             delivery_address: alamat
         })
@@ -488,22 +490,21 @@ function payNow() {
             // Munculkan Pop-up Midtrans DULU (Jangan hapus keranjang di sini)
             window.snap.pay(data.snap_token, {
                 onSuccess: function(result) {
-                    // HAPUS KERANJANG DI SINI (Karena sudah lunas)
+                    // Hapus keranjang belanja karena sudah lunas
                     localStorage.removeItem('alfazza_cart'); 
                     cart = []; 
                     updateCartUI(); 
 
-                    alert("Pembayaran Berhasil!");
-                    window.location.href = "/"; // Nanti bisa diarahkan ke halaman history
+                    // ALAHKAN KE HALAMAN SUKSES CODASHOP (Membawa data invoice dari backend)
+                    window.location.href = "/checkout/invoice/" + data.invoice;
                 },
                 onPending: function(result) {
-                    // HAPUS KERANJANG DI SINI (Karena invoice sudah terbuat, tinggal nunggu transfer)
                     localStorage.removeItem('alfazza_cart'); 
                     cart = []; 
                     updateCartUI();
 
-                    alert("Menunggu pembayaran diselesaikan...");
-                    window.location.href = "/"; 
+                    // Alihkan juga ke halaman sukses tapi statusnya nanti pending
+                    window.location.href = "/checkout/invoice/" + data.invoice; 
                 },
                 onError: function(result) {
                     alert("Pembayaran gagal diproses!");

@@ -10,14 +10,19 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
+        
+        // 1. Kenalkan 'role' ke Laravel agar error-nya hilang
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        // 2. Ini kode pengecualian CSRF Midtrans yang tadi
         $middleware->validateCsrfTokens(except: [
-            '/midtrans/callback'
+            '/midtrans/callback',
         ]);
+        
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

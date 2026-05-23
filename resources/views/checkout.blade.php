@@ -6,9 +6,15 @@
             <h2>Informasi Pemesan</h2>
             <form id="checkoutForm">
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Pemesan *</label>
-                        <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Pemesan *</label>
+                            <input type="text" id="nama" required placeholder="Masukkan nama lengkap">
+                        </div>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" id="email" required placeholder="Masukkan email aktif">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Nomor HP / WhatsApp *</label>

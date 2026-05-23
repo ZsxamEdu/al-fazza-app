@@ -16,10 +16,14 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete(); // ID Kasir
             $table->string('customer_name');
+            $table->string('customer_email')->nullable();
             $table->enum('order_type', ['kasir', 'online']);
             $table->integer('total_amount');
             $table->enum('payment_status', ['pending', 'success', 'failed'])->default('pending');
             $table->string('snap_token')->nullable(); // Khusus Midtrans (Payment Gateway)
+            $table->string('payment_method')->default('Cash');
+            $table->integer('amount_paid')->nullable();
+            $table->integer('change_amount')->nullable();
             $table->timestamps(); // Berguna banget untuk Filter Laporan Harian!
         });
     }

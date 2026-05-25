@@ -97,5 +97,5 @@
             <button class="btn-primary-about" onclick="window.location.href='{{ url('/custom-order') }}'">Pesan Sekarang</button>
         </div>
     </section>
-    
+    <script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>
 @endsection

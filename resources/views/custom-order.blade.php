@@ -5,29 +5,40 @@
         <div class="checkout-form-section">
             <h2>Informasi Pemesan</h2>
             <form id="customOrderForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Pemesan *</label>
-                        <input type="text" id="co_nama" required placeholder="Masukkan nama lengkap">
+                <div class="form-row" style="display: flex; flex-direction: row; gap: 15px; margin-bottom: 20px; width: 100%;">
+                    
+                    <div class="form-group" style="flex: 1;">
+                        <label style="font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Nama Lengkap *</label>
+                        <input type="text" id="co_nama" required placeholder="Masukkan nama Anda" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
                     </div>
-                    <div class="form-group">
-                        <label>Nomor HP / WhatsApp *</label>
-                        <input type="tel" id="co_nohp" required placeholder="Contoh: 081234567890">
+
+                    <div class="form-group" style="flex: 1;">
+                        <label style="font-weight: bold; color: #555; display: block; margin-bottom: 5px;">Email *</label>
+                        <input type="email" id="co_email" required placeholder="Masukkan email aktif" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
                     </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label style="font-weight: bold; color: #555; display: block; margin-bottom: 5px;">No. WhatsApp *</label>
+                        <input type="number" id="co_nohp" required placeholder="Contoh: 08123456789" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;">
+                    </div>
+
                 </div>
 
                 <h2>Spesifikasi Kue</h2>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Ukuran / Diameter (cm) *</label>
-                        <select id="co_ukuran" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <label>Ukuran Kue *</label>
+                        <select id="co_ukuran" required>
+                            <option value="" disabled selected>Pilih Ukuran</option>
                             <option value="16 cm">16 cm</option>
+                            <option value="18 cm">18 cm</option>
                             <option value="20 cm">20 cm</option>
+                            <option value="22 cm">22 cm</option>
                             <option value="24 cm">24 cm</option>
-                            <option value="Custom">Lainnya (Jelaskan di catatan)</option>
+                            <option value="30 cm">30 cm</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                                        <div class="form-group">
                         <label>Bentuk Kue *</label>
                         <select id="co_bentuk" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                             <option value="Bulat">Bulat</option>
@@ -63,8 +74,8 @@
                     <input type="text" id="co_tema" required placeholder="Contoh: Tema Spiderman, dominan merah dan biru">
                 </div>
                 <div class="form-group">
-                    <label>Tulisan di Atas Kue</label>
-                    <input type="text" id="co_tulisan" placeholder="Contoh: Happy Birthday Mama ke-50">
+                    <label>Tulisan di Atas Kue *</label>
+                    <input type="text" id="co_tulisan" required placeholder="Contoh: Happy Birthday Mama ke-50">
                 </div>
 
                 <h2>Waktu & Pengiriman</h2>
@@ -85,11 +96,6 @@
                     <label>Alamat Pengiriman</label>
                     <textarea id="co_alamat" rows="3" placeholder="Isi detail alamat pengiriman jika memilih 'Dikirim'"></textarea>
                 </div>
-
-                <div class="payment-info">
-                    <i class="fa-solid fa-camera"></i>
-                    <p>Setelah menekan tombol kirim ke WA, mohon lampirkan gambar referensi kue Anda di ruang chat.</p>
-                </div>
             </form>
         </div>
 
@@ -100,12 +106,11 @@
                 </div>
                 
                 <div class="instruction-box">
-                    <ol class="instruction-list">
-                        <li>Isi formulir spesifikasi kue di samping dengan lengkap.</li>
-                        <li>Klik <b>Lanjut ke WhatsApp</b> untuk mengirim data.</li>
-                        <li>Kirimkan <b>foto referensi/contoh desain</b> kue yang Anda inginkan di chat WhatsApp admin kami.</li>
-                        <li>Admin akan menghitung total harga berdasarkan tingkat kesulitan desain.</li>
-                        <li>Lakukan pembayaran DP setelah harga disepakati.</li>
+                    <ol style="line-height: 1.8; color: #555;">
+                        <li>Isi formulir spesifikasi <em>Custom Cake</em> Anda dengan lengkap dan teliti.</li>
+                        <li><strong>Total harga</strong> akan otomatis terhitung berdasarkan <strong>Ukuran Kue</strong> yang Anda pilih.</li>
+                        <li>Klik tombol <strong>"PESAN & BAYAR SEKARANG"</strong> untuk menyelesaikan pembayaran pesanan Anda.</li>
+                        <li>Setelah pembayaran berhasil, <strong>Anda bisa mengirimkan foto referensi atau contoh desain kue</strong> Anda ke WhatsApp admin kami <strong>08952338283</strong> dengan melampirkan Nomor Invoice.</li>
                     </ol>
                 </div>
             </div>
@@ -117,7 +122,10 @@
                 <textarea id="co_catatan" rows="3" placeholder="Contoh: Tolong krimnya jangan terlalu manis, dll."></textarea>
             </div>
 
-            <button class="btn-bayar-wa" onclick="prosesCustomOrderWA()">KIRIM REQUEST KE WHATSAPP</button>
+            <button type="button" onclick="prosesCustomOrderMidtrans()" style="background: #1a365d; color: white; border: none; padding: 15px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 20px;">
+                <i class="fa-solid fa-credit-card"></i> PESAN & BAYAR SEKARANG
+            </button>
         </div>
     </div>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 @endsection

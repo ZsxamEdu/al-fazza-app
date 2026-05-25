@@ -68,6 +68,7 @@ Route::get('/checkout', function () {
 Route::post('/checkout/process', [TransactionController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkout/invoice/{invoice}', [TransactionController::class, 'checkoutInvoice'])->name('checkout.invoice');
 Route::post('/midtrans/callback', [TransactionController::class, 'callback']);
+Route::post('/checkout/custom/process', [TransactionController::class, 'processCustomCheckout'])->name('checkout.custom.process');
 // Route::middleware(['auth'])->group(function () {
 // });
 

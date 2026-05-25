@@ -3,6 +3,18 @@ let cart = JSON.parse(localStorage.getItem('alfazza_cart')) || [];
 let posCart = [];
 
 document.addEventListener("DOMContentLoaded", () => {
+    // === TAMBAHAN KUNCI TANGGAL ===
+    // Sesuaikan ID-nya. Kalau untuk Custom Order: 'co_tanggal'. 
+    // Kalau untuk Checkout biasa, ganti dengan ID input tanggalmu.
+    const inputTanggal = document.getElementById('co_tanggal'); 
+    
+    if (inputTanggal) {
+        // Ambil tanggal hari ini dengan format YYYY-MM-DD (Standar HTML)
+        const today = new Date().toISOString().split('T')[0];
+        // Set batas minimal kalender ke hari ini
+        inputTanggal.setAttribute('min', today);
+    }
+    // =============================
     if(window.location.pathname.includes('/checkout')) renderCheckoutSummary();
     updateCartUI(); 
 
@@ -153,7 +165,7 @@ function removeFromCart(index) {
 function updateCartUI() {
     const elCount = document.getElementById('cart-count');
     const elItems = document.querySelector('.cart-items');
-    const elTotal = document.querySelector('.cart-total span:nth-child(2)');
+    const elTotal = document.querySelector('.cart-total span:nth-child(2)');    
     
     if (elCount) elCount.textContent = cart.reduce((tot, item) => tot + item.quantity, 0);
 
@@ -162,15 +174,30 @@ function updateCartUI() {
         elItems.innerHTML = cart.map((item, index) => {
             let sub = item.price * item.quantity;
             grandTotal += sub;
+    // GANTI MENJADI SEPERTI INI:
             return `
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="item-detail">
-                        <h4>${item.name}</h4><p>Qty: ${item.quantity}</p>
-                        <span>Rp ${item.price.toLocaleString('id-ID')}</span>
+                <div class="cart-item" style="display: flex; align-items: center; margin-bottom: 15px; position: relative;">
+                    
+                    <a href="/produk/${item.id}" style="display: flex; text-decoration: none; color: inherit; align-items: center; gap: 15px; width: 60%;">
+                        <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 1rem;">${item.name}</h4>
+                            <p style="margin: 5px 0 0; color: #a67c52; font-weight: bold;">Rp ${item.price.toLocaleString('id-ID')}</p>
+                        </div>
+                    </a>
+
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; margin-right: 30px;">
+                        <button type="button" onclick="kurangiQty(${index})" style="width: 25px; height: 25px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; display: flex; justify-content: center; align-items: center;">-</button>
+                        <span style="font-weight: bold;">${item.quantity}</span>
+                        <button type="button" onclick="tambahQty(${index})" style="width: 25px; height: 25px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; display: flex; justify-content: center; align-items: center;">+</button>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button>
-                </div>`;
+
+                    <button type="button" class="remove-item" onclick="removeFromCart(${index})" style="position: absolute; right: 0; background: transparent; border: none; color: #e74c3c; cursor: pointer; font-size: 1.1rem;">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+                <hr style="border: 0.5px solid #eee;">
+            `;
         }).join('');
         if (elTotal) elTotal.textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
     }
@@ -223,6 +250,31 @@ function prosesCheckoutWA() {
     window.open(`https://wa.me/6281221315946?t  ext=${encodeURIComponent(wa + `\n*Total: Rp ${total.toLocaleString('id-ID')}*`)}`);
 }
 
+// Fungsi untuk menambah Qty di keranjang
+function tambahQty(index) {
+    cart[index].quantity += 1;
+    // Simpan perubahan ke LocalStorage
+    localStorage.setItem('alfazza_cart', JSON.stringify(cart));
+    // Refresh tampilan keranjang
+    updateCartUI();
+}
+
+// Fungsi untuk mengurangi Qty di keranjang
+function kurangiQty(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+        localStorage.setItem('alfazza_cart', JSON.stringify(cart));
+        updateCartUI();
+    } else {
+        // Jika qty 1 dan ditekan minus, tanyakan apakah mau dihapus
+        if(confirm("Hapus produk ini dari keranjang?")) {
+            cart.splice(index, 1);
+            localStorage.setItem('alfazza_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+    }
+}
+
 // 6. Fungsi Custom Order
 
 // Fungsi untuk memunculkan/menyembunyikan field alamat pengiriman
@@ -236,51 +288,126 @@ function toggleAlamatCustom() {
     }
 }
 
-// Fungsi Checkout Custom Order via WA
-function prosesCustomOrderWA() {
-    // Ambil data pemesan
+// Fungsi Checkout Custom Order via Midtrans
+function prosesCustomOrderMidtrans() {
+    // 1. Ambil data pemesan
     const nama = document.getElementById('co_nama').value;
     const nohp = document.getElementById('co_nohp').value;
+    // Anggap kita tambahkan input email, kalau kosong pakai dummy sementara
+    const email = document.getElementById('co_email')?.value || 'custom@alfazza.com'; 
     
-    // Ambil spesifikasi
     const ukuran = document.getElementById('co_ukuran').value;
     const bentuk = document.getElementById('co_bentuk').value;
     const rasa = document.getElementById('co_rasa').value;
     const isian = document.getElementById('co_isian').value;
-    
-    // Ambil desain
     const tema = document.getElementById('co_tema').value;
     const tulisan = document.getElementById('co_tulisan').value || "-";
-    
-    // Ambil pengiriman & catatan
     const tanggal = document.getElementById('co_tanggal').value;
     const metode = document.getElementById('co_metode').value;
     const alamat = document.getElementById('co_alamat').value || "-";
     const catatan = document.getElementById('co_catatan').value || "-";
 
-    // Validasi input wajib
-    if (!nama || !nohp || !tema || !tanggal) {
-        return alert("Mohon lengkapi Nama, No HP, Tema/Warna, dan Tanggal Diperlukan!");
-    }
-    if (metode === "Dikirim" && !alamat) {
-        return alert("Mohon isi alamat pengiriman!");
+    // 2. Validasi (PALANG PINTU)
+    if (!tanggal || tanggal.trim() === "") {
+        alert("⚠️ Mohon isi Tanggal Pengiriman terlebih dahulu!");
+        document.getElementById('co_tanggal').focus();
+        return; // Menghentikan script ke Midtrans
     }
 
-    // Format Pesan WA
-    let wa = `Halo *AL-Fazza Bakery*, saya ingin melakukan *Custom Order Cake*.\n\n`;
-    wa += `*DATA PEMESAN*\n- Nama: ${nama}\n- HP: ${nohp}\n\n`;
-    wa += `*SPESIFIKASI KUE*\n- Ukuran: ${ukuran}\n- Bentuk: ${bentuk}\n- Base Cake: ${rasa}\n- Isian: ${isian}\n\n`;
-    wa += `*DETAIL DESAIN*\n- Tema/Warna: ${tema}\n- Tulisan di Kue: ${tulisan}\n\n`;
-    wa += `*PENGIRIMAN*\n- Tanggal: ${tanggal}\n- Metode: ${metode}\n`;
-    
-    if (metode === "Dikirim") {
-        wa += `- Alamat: ${alamat}\n`;
+    if (!nama || nama.trim() === "") {
+        alert("⚠️ Mohon lengkapi Nama Anda!");
+        document.getElementById('co_nama').focus();
+        return; 
     }
-    
-    wa += `\n📝 *Catatan Tambahan:* ${catatan}\n\n`;
-    wa += `_(Saya akan mengirimkan gambar referensi desainnya setelah pesan ini)_`;
 
-    window.open(`https://wa.me/6281221315946?text=${encodeURIComponent(wa)}`);
+    if (!nohp || nohp.trim() === "") {
+        alert("⚠️ Mohon isi No WhatsApp!");
+        document.getElementById('co_nohp').focus();
+        return; 
+    }
+
+    if (!tema || tema.trim() === "") {
+        alert("⚠️ Mohon isi Tema/Warna kue!");
+        document.getElementById('co_tema').focus();
+        return; 
+    }
+
+    if (metode === "Dikirim" && (!alamat || alamat.trim() === "")) {
+        alert("⚠️ Mohon isi detail alamat pengiriman!");
+        document.getElementById('co_alamat').focus();
+        return; 
+    }
+
+    // === TAMBAHAN GERBANG KONFIRMASI ===
+    const konfirmasi = confirm("Mohon periksa kembali:\nApakah spesifikasi kue, alamat pengiriman, dan data diri Anda sudah sesuai?\n\nKlik 'OK' untuk memproses tagihan.");
+    
+    // Jika pembeli klik "Cancel/Batal", hentikan proses!
+    if (!konfirmasi) {
+        return; 
+    }
+    // 3. Tentukan Harga (Karena Midtrans WAJIB ada angka tagihan)
+    // Kamu bisa ganti angka ini, atau ambil dari inputan harga jika ada
+    let hargaCustomCake = 150000; 
+
+    if (ukuran.includes('18')) {
+        hargaCustomCake = 180000; // Jika ukuran 18 cm, harga 180k
+    } else if (ukuran.includes('20')) {
+        hargaCustomCake = 220000; // Jika ukuran 20 cm, harga 220k
+    } else if (ukuran.includes('22')) {
+        hargaCustomCake = 260000; // Jika ukuran 22 cm, harga 260k
+    } else if (ukuran.includes('24')) {
+        hargaCustomCake = 300000; // Jika ukuran 24 cm, harga 300k
+    } else if (ukuran.includes('30')) {
+        hargaCustomCake = 450000; // Jika ukuran 30 cm, harga 450k
+    }
+
+    // Gabungkan detail custom menjadi satu kalimat untuk disimpan di database (opsional)
+    let detailKue = `Ukuran: ${ukuran}, Bentuk: ${bentuk}, Rasa: ${rasa}, Tema: ${tema}, Tgl: ${tanggal}, Alamat: ${alamat}`;
+
+    let csrfToken = document.querySelector('meta[name="csrf-token"]');
+
+    // 4. Kirim ke Laravel
+    fetch("/checkout/custom/process", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken.getAttribute('content')
+        },
+        body: JSON.stringify({
+            customer_name: nama,
+            customer_email: email,
+            customer_phone: nohp,
+            total_price: hargaCustomCake,
+            delivery_address: alamat,
+            custom_details: detailKue
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.snap_token) {
+            // Panggil Pop-up Midtrans
+            window.snap.pay(data.snap_token, {
+                onSuccess: function(result) {
+                    window.location.href = "/checkout/invoice/" + data.invoice;
+                },
+                onPending: function(result) {
+                    window.location.href = "/checkout/invoice/" + data.invoice; 
+                },
+                onError: function(result) {
+                    alert("Pembayaran gagal diproses!");
+                },
+                onClose: function() {
+                    alert('Kamu menutup halaman pembayaran sebelum menyelesaikan transaksi.'); 
+                }
+            });
+        } else {
+            alert("Gagal mendapatkan token: " + (data.error || "Unknown Error"));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Terjadi kesalahan sistem saat memproses custom order.");
+    });
 }
 
 // Fungsi memasukkan roti ke struk
@@ -458,8 +585,46 @@ function payNow() {
     let noHp = document.getElementById('nohp')?.value;
     let alamat = document.getElementById('alamat')?.value;
 
-    if (!namaPembeli || !emailPembeli || !noHp || !alamat) {
-        return alert('Mohon lengkapi Nama, Email, No HP, dan Alamat Pengiriman!');
+// (Lanjutan dari fungsi payNow, di bawah pengambilan data)
+
+    // PALANG PINTU VALIDASI CHECKOUT BIASA
+    if (!namaPembeli || namaPembeli.trim() === "") {
+        alert('⚠️ Mohon isi Nama Anda!');
+        document.getElementById('nama').focus();
+        return; // Menghentikan script
+    }
+
+    if (!emailPembeli || emailPembeli.trim() === "") {
+        alert('⚠️ Mohon isi Email Anda!');
+        document.getElementById('email').focus();
+        return;
+    }
+
+    if (!noHp || noHp.trim() === "") {
+        alert('⚠️ Mohon isi No HP Anda!');
+        document.getElementById('nohp').focus();
+        return;
+    }
+
+    if (!alamat || alamat.trim() === "") {
+        alert('⚠️ Mohon isi Alamat Pengiriman!');
+        document.getElementById('alamat').focus();
+        return;
+    }
+
+    // CATATAN: Kalau di form checkout biasa ini kamu JUGA punya input tanggal pengiriman (misal id-nya 'tanggal_kirim'), tambahkan juga seperti ini:
+    let tanggalKirim = document.getElementById('tanggal_kirim')?.value;
+    if (!tanggalKirim || tanggalKirim.trim() === "") {
+         alert('⚠️ Mohon isi Tanggal Pengiriman!');
+         document.getElementById('tanggal_kirim').focus();
+         return;
+    }
+
+    // === TAMBAHAN GERBANG KONFIRMASI ===
+    const konfirmasiCheckout = confirm("Mohon periksa kembali:\nApakah daftar belanjaan dan alamat pengiriman Anda sudah sesuai?\n\nKlik 'OK' untuk melanjutkan ke pembayaran.");
+    
+    if (!konfirmasiCheckout) {
+        return; // Hentikan script jika klik Cancel
     }
 
     // 4. Ambil CSRF Token dari tag <meta> di layout utama

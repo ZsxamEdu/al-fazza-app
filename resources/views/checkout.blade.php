@@ -24,10 +24,9 @@
 
                 <h2>Informasi Pengiriman</h2>
                 <div class="form-group">
-                    <label>Waktu Pengiriman</label>
-                    <input type="date" id="tanggalKirim" required>
+                    <label>Waktu Pengiriman *</label>
+                    <input type="date" id="tanggal_kirim" required min="{{ date('Y-m-d') }}" ...>
                 </div>
-                
                 <div class="form-group">
                     <label>Detail Alamat Pengiriman *</label>
                     <textarea id="alamat" rows="4" required placeholder="Isi dengan detail tambahan seperti nomor rumah, blok, nama gedung, patokan, dll."></textarea>

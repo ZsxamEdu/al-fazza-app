@@ -383,6 +383,15 @@ function prosesCustomOrderMidtrans() {
         return; // Menghentikan script ke Midtrans
     }
 
+    // === SATPAM ANTI TANGGAL MASA LALU (MANUAL KETIK) ===
+    const hariIni = new Date().toISOString().split('T')[0]; // Ambil tgl hari ini (YYYY-MM-DD)
+    if (tanggal < hariIni) {
+        alert("⚠️ Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!");
+        document.getElementById('co_tanggal').value = ""; // Kosongkan inputan yang salah
+        document.getElementById('co_tanggal').focus();
+        return; // Hentikan proses!
+    }
+
     if (!metode || metode.trim() === "") {
         alert("⚠️ Mohon isi Metode pengiriman anda");
         document.getElementById('co_metode').focus();
@@ -683,6 +692,15 @@ function payNow() {
          alert('⚠️ Mohon isi Tanggal Pengiriman!');
          document.getElementById('tanggal_kirim').focus();
          return;
+    }
+
+    // === SATPAM ANTI TANGGAL MASA LALU (MANUAL KETIK) ===
+    const hariIniCheckout = new Date().toISOString().split('T')[0];
+    if (tanggalKirim < hariIniCheckout) {
+        alert("⚠️ Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!");
+        document.getElementById('tanggal_kirim').value = ""; // Kosongkan
+        document.getElementById('tanggal_kirim').focus();
+        return; 
     }
 
     if (!alamat || alamat.trim() === "") {

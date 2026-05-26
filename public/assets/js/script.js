@@ -293,7 +293,6 @@ function prosesCustomOrderMidtrans() {
     // 1. Ambil data pemesan
     const nama = document.getElementById('co_nama').value;
     const nohp = document.getElementById('co_nohp').value;
-    // Anggap kita tambahkan input email, kalau kosong pakai dummy sementara
     const email = document.getElementById('co_email')?.value; 
     
     const ukuran = document.getElementById('co_ukuran').value;
@@ -428,24 +427,21 @@ function prosesCustomOrderMidtrans() {
     }
 
     // Gabungkan detail custom menjadi satu kalimat untuk disimpan di database (opsional)
-    let detailKue = `Ukuran: ${ukuran}, Bentuk: ${bentuk}, Rasa: ${rasa}, Tema: ${tema}, Tgl: ${tanggal}, Alamat: ${alamat}`;
-
+    let detailKue = `Ukuran: ${ukuran} | Bentuk: ${bentuk} | Rasa: ${rasa} | Isian: ${isian} | Tema: ${tema} | Tulisan: "${tulisan}"`;
     let csrfToken = document.querySelector('meta[name="csrf-token"]');
 
-    // 4. Kirim ke Laravel
     fetch("/checkout/custom/process", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken.getAttribute('content')
-        },
+        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrfToken.getAttribute('content') },
         body: JSON.stringify({
             customer_name: nama,
             customer_email: email,
             customer_phone: nohp,
             total_price: hargaCustomCake,
             delivery_address: alamat,
-            custom_details: detailKue
+            custom_details: detailKue,
+            delivery_date: tanggal, // Dikirim ke kolom khusus
+            notes: catatan // Dikirim ke kolom khusus
         })
     })
     .then(response => response.json())
@@ -723,20 +719,20 @@ function payNow() {
         return alert("Error: Meta CSRF Token tidak ditemukan di layout!");
     }
 
-    // 5. Kirim data ke Laravel Controller
+    let catatan = document.getElementById('catatan')?.value || "-";
+
     fetch("/checkout/process", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken.getAttribute('content')
-        },
+        headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrfToken.getAttribute('content') },
         body: JSON.stringify({
             total_price: grandTotal, 
             items: cart,
             customer_name: namaPembeli,
-            customer_email: emailPembeli, // Data email dikirim ke Laravel
+            customer_email: emailPembeli,
             customer_phone: noHp,
-            delivery_address: alamat
+            delivery_address: alamat,
+            delivery_date: tanggalKirim,
+            notes: catatan 
         })
     })
     .then(response => response.json())

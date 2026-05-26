@@ -40,10 +40,10 @@ class TransactionController extends Controller
                 'user_id' => Auth::id() ?? null, 
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
-                
                 'customer_phone' => $request->customer_phone,
                 'delivery_address' => $request->delivery_address,
-                
+                'delivery_date' => $request->delivery_date,
+                'notes' => $request->notes,
                 'total_amount' => $request->total_price,
                 'payment_status' => 'pending',
                 'order_type' => 'online', // Pesanan biasa
@@ -123,6 +123,8 @@ class TransactionController extends Controller
             $transaction->customer_email = $request->customer_email;
             $transaction->customer_phone = $request->customer_phone;
             $transaction->delivery_address = $request->delivery_address;
+            $transaction->delivery_date = $request->delivery_date; 
+            $transaction->notes = $request->notes; 
             $transaction->custom_details = $request->custom_details; 
             $transaction->order_type = 'custom-order'; 
             $transaction->total_amount = $request->total_price;

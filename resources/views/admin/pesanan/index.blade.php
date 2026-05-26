@@ -30,7 +30,7 @@
                 <select name="jenis" class="form-control" style="width: 100%; padding: 8px;">
                     <option value="">Semua Jenis</option>
                     <option value="online" {{ request('jenis') == 'online' ? 'selected' : '' }}>Online (Roti Biasa)</option>
-                    <option value="custom" {{ request('jenis') == 'custom' ? 'selected' : '' }}>Custom Cake</option>
+                    <option value="custom-order" {{ request('jenis') == 'custom-order' ? 'selected' : '' }}>Custom Cake</option>
                     <option value="kasir" {{ request('jenis') == 'kasir' ? 'selected' : '' }}>Kasir (Offline)</option>
                 </select>
             </div>
@@ -57,11 +57,19 @@
                 @forelse($pesanan as $p)
                 <tr>
                     <!-- Kolom 1: Invoice -->
-                    <td style="vertical-align: top;">
+                                        <td style="vertical-align: top;">
                         <strong>{{ $p->invoice_number }}</strong><br>
-                        {{ $p->created_at->format('d M Y, H:i') }}<br>
+                        <small>Dipesan: {{ $p->created_at->format('d M Y') }}</small><br>
+                        
+                        <!-- Tampilkan Tanggal Harus Dikirim -->
+                        @if($p->delivery_date)
+                            <div style="margin-top: 5px; padding: 4px; background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 4px; font-size: 11px; color: #e65100; display: inline-block;">
+                                <i class="fa-regular fa-calendar-check"></i> Krm: <strong>{{ \Carbon\Carbon::parse($p->delivery_date)->format('d M Y') }}</strong>
+                            </div><br>
+                        @endif
+
                         <span style="display: inline-block; margin-top: 5px; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; 
-                            {{ $p->order_type == 'custom' ? 'background: #9b59b6; color: white;' : ($p->order_type == 'kasir' ? 'background: #a67c52; color: white;' : 'background: #3498db; color: white;') }}">
+                            {{ $p->order_type == 'custom-order' ? 'background: #9b59b6; color: white;' : ($p->order_type == 'kasir' ? 'background: #a67c52; color: white;' : 'background: #3498db; color: white;') }}">
                             {{ strtoupper($p->order_type) }}
                         </span>
                     </td>
@@ -72,11 +80,16 @@
                         <i class="fa-solid fa-phone"></i> {{ $p->customer_phone ?? '-' }}<br>
                         <hr style="margin: 5px 0; border: 0.5px solid #eee;">
                         <span style="font-size: 12px; color: #555;">{{ $p->delivery_address ?? 'Beli di Tempat (Kasir)' }}</span>
+                        @if($p->notes && $p->notes != '-')
+                            <div style="margin-top: 5px; font-size: 11px; color: #d35400; background: #fdf2e9; padding: 4px; border-radius: 4px;">
+                                <strong>Catatan:</strong> {{ $p->notes }}
+                            </div>
+                        @endif
                     </td>
                     
                     <!-- Kolom 3: Detail Produk -->
                     <td style="vertical-align: top; max-width: 250px;">
-                        @if($p->order_type == 'custom')
+                        @if($p->order_type == 'custom-order')
                             <!-- Tampilkan Detail Custom Cake -->
                             <div style="font-size: 13px; color: #333; background: #f9f9f9; padding: 8px; border-radius: 6px;">
                                 {!! str_replace(', ', '<br>', $p->custom_details) !!}

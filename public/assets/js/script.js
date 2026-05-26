@@ -482,7 +482,7 @@ function addToPosCart(id, nama, harga) {
     if (item) {
         item.qty += 1; // Jika sudah ada, tambah jumlahnya
     } else {
-        posCart.push({ id: id, nama: nama, harga: harga, qty: 1 }); // Jika belum ada, masukkan baru
+        posCart.push({ id: id, nama: nama, harga: Number(harga), qty: 1 }); 
     }
     renderPosCart();
 }
@@ -538,6 +538,7 @@ function renderPosCart() {
     });
 
     totalEl.textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+    posGrandTotal = grandTotal; 
 }
 
 let posGrandTotal = 0;

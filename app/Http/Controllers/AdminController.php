@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\InventoryLog;
@@ -235,18 +236,71 @@ class AdminController extends Controller
         return redirect()->route('admin.stok.index')->with('success', 'Riwayat stok berhasil dicatat dan stok produk telah diperbarui!');
     }
 
-    public function laporanIndex()
+        public function laporanIndex(Request $request)
     {
-        // 1. Ambil semua transaksi yang sukses (Lunas), urutkan dari yang paling baru
-        $transaksi = Transaction::where('payment_status', 'success')
-                                ->orderBy('created_at', 'desc')
-                                ->get();
+        $query = Transaction::where('payment_status', 'success');
 
-        // 2. Hitung total pendapatan dan total jumlah transaksi
+        // Fitur Pencarian (berdasarkan No. Invoice)
+        if ($request->filled('search')) {
+            $query->where('invoice_number', 'like', '%' . $request->search . '%');
+        }
+
+        // Fitur Filter Rentang Waktu Terpilih (Minggu, Bulan, Tahun)
+        if ($request->filled('range')) {
+            if ($request->range == 'minggu') {
+                $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+            } elseif ($request->range == 'bulan') {
+                $query->whereMonth('created_at', Carbon::now()->month)
+                      ->whereYear('created_at', Carbon::now()->year);
+            } elseif ($request->range == 'tahun') {
+                $query->whereYear('created_at', Carbon::now()->year);
+            }
+        }
+
+        // Fitur Filter Range Tanggal Kustom (Mulai s.d Selesai)
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        $transaksi = $query->orderBy('created_at', 'desc')->get();
+
         $totalPendapatan = $transaksi->sum('total_amount');
         $totalTransaksi = $transaksi->count();
 
         return view('admin.laporan.index', compact('transaksi', 'totalPendapatan', 'totalTransaksi'));
+    }
+
+    // Fungsi Baru untuk Cetak PDF
+    public function laporanPdf(Request $request)
+    {
+        $query = Transaction::where('payment_status', 'success');
+
+        // Terapkan filter yang sama untuk PDF
+        if ($request->filled('search')) {
+            $query->where('invoice_number', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('range')) {
+            if ($request->range == 'minggu') {
+                $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+            } elseif ($request->range == 'bulan') {
+                $query->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
+            } elseif ($request->range == 'tahun') {
+                $query->whereYear('created_at', Carbon::now()->year);
+            }
+        }
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+        }
+
+        $transaksi = $query->orderBy('created_at', 'desc')->get();
+        $totalPendapatan = $transaksi->sum('total_amount');
+        $totalTransaksi = $transaksi->count();
+
+        // Load view PDF
+        $pdf = Pdf::loadView('admin.laporan.pdf', compact('transaksi', 'totalPendapatan', 'totalTransaksi'));
+        
+        // Return file PDF
+        return $pdf->stream('Laporan_Keuangan_AlFazza.pdf');
     }
 
 }

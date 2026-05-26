@@ -44,6 +44,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/stok', [AdminController::class, 'stokStore'])->name('admin.stok.store'); // Proses Simpan & Update Stok
 
     Route::get('/admin/laporan', [AdminController::class, 'laporanIndex'])->name('admin.laporan.index');
+    Route::get('/admin/laporan/pdf', [AdminController::class, 'laporanPdf'])->name('admin.laporan.pdf');
 
 });
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\InventoryLog;
+use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\Auth;
 
 class KasirController extends Controller
@@ -51,15 +52,12 @@ class KasirController extends Controller
 
         // 4. Simpan ke Detail Transaksi, Potong Stok, dan Catat Riwayat
         foreach ($cartData as $item) {
-            // Kita belum buat model TransactionDetail, jadi sementara pakai Query Builder DB
-            \Illuminate\Support\Facades\DB::table('transaction_details')->insert([
+            TransactionDetail::create([
                 'transaction_id' => $transaksi->id,
-                'product_id' => $item['id'],
-                'qty' => $item['qty'],
-                'price' => $item['harga'],
-                'subtotal' => $item['harga'] * $item['qty'],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'product_id'     => $item['id'],
+                'qty'            => $item['qty'],
+                'price'          => $item['harga'],
+                'subtotal'       => $item['harga'] * $item['qty'],
             ]);
 
             // Potong Stok di Tabel Product

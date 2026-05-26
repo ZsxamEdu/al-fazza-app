@@ -9,8 +9,6 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
-
     protected $fillable = [
         'invoice_number',
         'user_id',
@@ -21,7 +19,8 @@ class Transaction extends Model
         'payment_status',
         'payment_method',
         'amount_paid',
-        'snap_token', // <-- PASTIKAN INI ADA
+        'change_amount',
+        'snap_token',
     ];
 
     public function details()

@@ -16,7 +16,7 @@
 
                 <div class="order-controls">
                     <!-- Tombol beli mengambil QTY dari input -->
-                    <button class="btn-primary-cart" onclick="let qty = parseInt(document.getElementById('qty').value) || 1; addToCart('{{ $kue->nama }}', {{ $kue->harga }}, '{{ asset($kue->gambar) }}', qty)">Tambahkan ke Keranjang</button>
+                    <button class="btn-primary-cart" onclick="let qty = parseInt(document.getElementById('qty').value) || 1; addToCart('{{ $kue->id }}', '{{ $kue->nama }}', {{ $kue->harga }}, '{{ asset($kue->gambar) }}', qty)">Tambahkan ke Keranjang</button>
                     <div class="qty-input">
                         <button onclick="changeQty(-1)">-</button>
                         <input type="number" id="qty" value="1" min="1" readonly>

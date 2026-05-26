@@ -51,7 +51,7 @@
                         <p>Rp {{ number_format($p->harga, 0, ',', '.') }}</p>
                         <div>
                             <!-- Tombol beli tetap memanggil fungsi JS -->
-                            <button class="btn-add-cart" onclick="addToCart('{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
+                            <button class="btn-add-cart" onclick="addToCart('{{ $p->id }}', '{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
                             <!-- Link detail sekarang pakai format rute parameter (contoh: /detail/1) -->
                             <a href="{{ url('/detail/' . $p->id) }}" class="btn-brown text-center block">Detail</a>
                         </div>

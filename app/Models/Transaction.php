@@ -16,6 +16,8 @@ class Transaction extends Model
         'customer_email',
         'customer_phone', 
         'delivery_address',
+        'delivery_date', 
+        'notes',
         'order_type',
         'total_amount',
         'payment_status',

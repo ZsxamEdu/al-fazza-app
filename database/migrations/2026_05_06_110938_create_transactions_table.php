@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('customer_email')->nullable();
             $table->string('customer_phone')->nullable();
             $table->text('delivery_address')->nullable();
+            $table->date('delivery_date')->nullable();
+            $table->text('notes')->nullable();
             $table->enum('order_type', ['kasir', 'online', 'custom-order']);
             $table->integer('total_amount');
             $table->enum('payment_status', ['pending', 'success', 'failed'])->default('pending');

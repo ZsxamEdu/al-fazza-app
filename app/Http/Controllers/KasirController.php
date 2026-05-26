@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\InventoryLog;
 use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KasirController extends Controller
 {
@@ -21,66 +22,93 @@ class KasirController extends Controller
     // Fungsi memproses data dari mesin Kasir
     public function prosesPos(Request $request)
     {
-        // 1. Ubah teks JSON dari JavaScript kembali menjadi Array PHP
-        $cartData = json_decode($request->cart_data, true);
-        
-        if (!$cartData || count($cartData) == 0) {
-            return redirect()->back()->with('error', 'Keranjang kosong!');
-        }
-
-        // 2. Hitung Grand Total
-        $grandTotal = 0;
-        foreach ($cartData as $item) {
-            $grandTotal += ($item['harga'] * $item['qty']);
-        }
-
-        // 3. Simpan ke tabel Transaksi Utama (Transactions)
-        $invoiceNumber = 'POS-' . date('Ymd-His');
-        
-        $transaksi = Transaction::create([
-            'invoice_number' => $invoiceNumber,
-            'user_id' => Auth::id(),
-            'customer_name' => 'Pelanggan Toko',
-            'order_type' => 'kasir',
-            'total_amount' => $grandTotal,
-            'payment_status' => 'success',
-            'payment_method' => $request->payment_method,
-            'amount_paid' => $request->amount_paid,
-            'change_amount' => $request->change_amount,
-        ]);
-
-
-        // 4. Simpan ke Detail Transaksi, Potong Stok, dan Catat Riwayat
-        foreach ($cartData as $item) {
-            TransactionDetail::create([
-                'transaction_id' => $transaksi->id,
-                'product_id'     => $item['id'],
-                'qty'            => $item['qty'],
-                'price'          => $item['harga'],
-                'subtotal'       => $item['harga'] * $item['qty'],
-            ]);
-
-            // Potong Stok di Tabel Product
-            $product = Product::find($item['id']);
-            if ($product) {
-                $product->decrement('stok', $item['qty']);
+        DB::beginTransaction();
+        try {
+            // 1. Ubah teks JSON dari JavaScript kembali menjadi Array PHP
+            $cartData = json_decode($request->cart_data, true);
+            
+            if (!$cartData || count($cartData) == 0) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Keranjang kosong!');
             }
 
-            // Catat ke Buku Riwayat (Inventory Logs)
-            InventoryLog::create([
-                'product_id' => $item['id'],
-                'tipe' => 'keluar',
-                'jumlah' => $item['qty'],
-                'keterangan' => 'Terjual via Kasir (Invoice: ' . $invoiceNumber . ')',
-            ]);
-        }
+            // 2. Hitung Grand Total dan Validasi Stok Server-Side
+            $serverGrandTotal = 0;
+            $validItems = [];
+            
+            foreach ($cartData as $item) {
+                $product = Product::find($item['id']);
+                
+                if (!$product) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Produk tidak ditemukan!');
+                }
+                
+                if ($product->stok < $item['qty']) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Stok ' . $product->nama . ' tidak mencukupi! Sisa: ' . $product->stok);
+                }
+                
+                $subtotal = $product->harga * $item['qty'];
+                $serverGrandTotal += $subtotal;
+                
+                $validItems[] = [
+                    'product_id' => $product->id,
+                    'qty' => $item['qty'],
+                    'price' => $product->harga,
+                    'subtotal' => $subtotal
+                ];
+            }
 
-        // 5. Arahkan ke Halaman Sukses / Cetak Struk (Nanti kita buat halamannya)
-        return redirect()->route('kasir.selesai', $transaksi->id)
-                        ->with('success', 'Transaksi berhasil disimpan!'); 
-        
-        
-        
+            // 3. Simpan ke tabel Transaksi Utama (Transactions)
+            $invoiceNumber = 'POS-' . date('Ymd-His');
+            
+            $transaksi = Transaction::create([
+                'invoice_number' => $invoiceNumber,
+                'user_id' => Auth::id(),
+                'customer_name' => 'Pelanggan Toko',
+                'order_type' => 'kasir',
+                'total_amount' => $serverGrandTotal,
+                'payment_status' => 'success',
+                'payment_method' => $request->payment_method,
+                'amount_paid' => $request->amount_paid,
+                'change_amount' => max(0, $request->amount_paid - $serverGrandTotal), // server-side kembalian
+            ]);
+
+
+            // 4. Simpan ke Detail Transaksi, Potong Stok, dan Catat Riwayat
+            foreach ($validItems as $vItem) {
+                TransactionDetail::create([
+                    'transaction_id' => $transaksi->id,
+                    'product_id'     => $vItem['product_id'],
+                    'qty'            => $vItem['qty'],
+                    'price'          => $vItem['price'],
+                    'subtotal'       => $vItem['subtotal'],
+                ]);
+
+                // Potong Stok di Tabel Product
+                $product = Product::find($vItem['product_id']);
+                $product->decrement('stok', $vItem['qty']);
+
+                // Catat ke Buku Riwayat (Inventory Logs)
+                InventoryLog::create([
+                    'product_id' => $vItem['product_id'],
+                    'tipe' => 'keluar',
+                    'jumlah' => $vItem['qty'],
+                    'keterangan' => 'Terjual via Kasir (Invoice: ' . $invoiceNumber . ')',
+                ]);
+            }
+
+            DB::commit();
+
+            // 5. Arahkan ke Halaman Sukses / Cetak Struk
+            return redirect()->route('kasir.selesai', $transaksi->id)
+                            ->with('success', 'Transaksi berhasil disimpan!'); 
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
     }
       // Fungsi untuk menampilkan halaman ringkasan & tombol cetak
     public function selesai($id)

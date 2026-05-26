@@ -10,6 +10,7 @@ use App\Models\TransactionDetail;
 use App\Models\Product;
 use App\Models\InventoryLog;
 use App\Mail\InvoiceMail;
+use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\Snap;
 
@@ -31,49 +32,96 @@ class TransactionController extends Controller
 
     public function processCheckout(Request $request)
     {
+        DB::beginTransaction();
         try {
             $invoice = 'ALF-' . date('YmdHis');
             
-            // 1. Simpan Transaksi Utama (Ubah default Cash jadi Online)
+            // 1. Hitung ulang total secara server-side dan validasi stok
+            $serverGrandTotal = 0;
+            $validItems = [];
+
+            if ($request->items) {
+                foreach ($request->items as $item) {
+                    // Cek jika keranjang versi lama (tidak ada ID)
+                    if (!isset($item['id'])) {
+                        DB::rollBack();
+                        return response()->json(['error' => 'Format keranjang sudah usang. Mohon kosongkan keranjang Anda dan tambahkan ulang produk.'], 400);
+                    }
+
+                    $product = Product::find($item['id']);
+                    
+                    if (!$product) {
+                        DB::rollBack();
+                        return response()->json(['error' => 'Produk tidak ditemukan!'], 400);
+                    }
+
+                    if ($product->stok < $item['quantity']) {
+                        DB::rollBack();
+                        return response()->json(['error' => 'Stok ' . $product->nama . ' tidak mencukupi! Sisa stok: ' . $product->stok], 400);
+                    }
+
+                    $subtotal = $product->harga * $item['quantity'];
+                    $serverGrandTotal += $subtotal;
+
+                    // Simpan data untuk dimasukkan ke TransactionDetail nanti
+                    $validItems[] = [
+                        'product_id' => $product->id,
+                        'qty' => $item['quantity'],
+                        'price' => $product->harga,
+                        'subtotal' => $subtotal,
+                        'nama_produk' => $product->nama // Untuk log
+                    ];
+                }
+            } else {
+                DB::rollBack();
+                return response()->json(['error' => 'Keranjang kosong!'], 400);
+            }
+
+            // 2. Simpan Transaksi Utama
             $transaction = Transaction::create([
                 'invoice_number' => $invoice,
                 'user_id' => Auth::id() ?? null, 
                 'customer_name' => $request->customer_name,
                 'customer_email' => $request->customer_email,
-                
                 'customer_phone' => $request->customer_phone,
                 'delivery_address' => $request->delivery_address,
-                
-                'total_amount' => $request->total_price,
+                'delivery_date' => $request->delivery_date,
+                'notes' => $request->notes,
+                'total_amount' => $serverGrandTotal,
                 'payment_status' => 'pending',
                 'order_type' => 'online', // Pesanan biasa
                 'payment_method' => 'Midtrans (Pending)',
                 'amount_paid' => 0,
             ]);
 
-            // 2. SIMPAN RINCIAN PESANAN (Biar rotinya tidak hilang)
-            if ($request->items) {
-                foreach ($request->items as $item) {
-                    // Cari ID roti berdasarkan namanya (karena dari JS cuma ngirim nama)
-                    $product = Product::where('nama', $item['name'])->first();
-                    
-                    if ($product) {
-                        TransactionDetail::create([
-                            'transaction_id' => $transaction->id,
-                            'product_id' => $product->id,
-                            'qty' => $item['quantity'],
-                            'price' => $item['price'],
-                            'subtotal' => $item['price'] * $item['quantity'],
-                        ]);
-                    }
-                }
+            // 3. SIMPAN RINCIAN PESANAN & POTONG STOK
+            foreach ($validItems as $vItem) {
+                TransactionDetail::create([
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $vItem['product_id'],
+                    'qty' => $vItem['qty'],
+                    'price' => $vItem['price'],
+                    'subtotal' => $vItem['subtotal'],
+                ]);
+
+                // Pemotongan Stok Langsung
+                $product = Product::find($vItem['product_id']);
+                $product->decrement('stok', $vItem['qty']);
+
+                // Catat Log Keluar
+                InventoryLog::create([
+                    'product_id' => $product->id,
+                    'tipe' => 'keluar',
+                    'jumlah' => $vItem['qty'],
+                    'keterangan' => 'Booking Online (' . $invoice . ')',
+                ]);
             }
 
-            // 3. Siapkan data untuk dikirim ke Midtrans
+            // 4. Siapkan data untuk dikirim ke Midtrans
             $params = [
                 'transaction_details' => [
                     'order_id' => $invoice,
-                    'gross_amount' => (int) $request->total_price,
+                    'gross_amount' => (int) $serverGrandTotal,
                 ],
                 'customer_details' => [
                     'first_name' => $request->customer_name,
@@ -81,13 +129,15 @@ class TransactionController extends Controller
                 ],
             ];
 
-            // 4. Minta Snap Token dari Midtrans
+            // 5. Minta Snap Token dari Midtrans
             $snapToken = Snap::getSnapToken($params);
             
             // SIMPAN TOKEN KE DATABASE
             $transaction->update([
                 'snap_token' => $snapToken
             ]);
+
+            DB::commit();
 
             // // === TAMBAHAN BARU: KIRIM EMAIL KE PEMBELI ===
             // if ($request->customer_email) {
@@ -106,6 +156,7 @@ class TransactionController extends Controller
             ]);
             
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -118,11 +169,13 @@ class TransactionController extends Controller
             // 2. SIMPAN TRANSAKSI (PAKAI JALUR VVIP BIAR ANTI ERROR)
             $transaction = new Transaction();
             $transaction->invoice_number = $invoice;
-            $transaction->user_id = \Illuminate\Support\Facades\Auth::id() ?? null;
+            $transaction->user_id = Auth::id() ?? null;
             $transaction->customer_name = $request->customer_name;
             $transaction->customer_email = $request->customer_email;
             $transaction->customer_phone = $request->customer_phone;
             $transaction->delivery_address = $request->delivery_address;
+            $transaction->delivery_date = $request->delivery_date; 
+            $transaction->notes = $request->notes; 
             $transaction->custom_details = $request->custom_details; 
             $transaction->order_type = 'custom-order'; 
             $transaction->total_amount = $request->total_price;
@@ -245,22 +298,6 @@ class TransactionController extends Controller
                             'amount_paid' => $request->gross_amount,
                         ]);
 
-                        // Potong Stok
-                        if ($transaction->details) {
-                            foreach ($transaction->details as $detail) {
-                                $product = Product::find($detail->product_id);
-                                if ($product) {
-                                    $product->decrement('stok', $detail->qty);
-                                    InventoryLog::create([
-                                        'product_id' => $product->id,
-                                        'tipe' => 'keluar',
-                                        'jumlah' => $detail->qty,
-                                        'keterangan' => 'Terjual Online (' . $transaction->invoice_number . ') via ' . $metodeBayar,
-                                    ]);
-                                }
-                            }
-                        }
-
                         // EMAIL 1: KIRIM EMAIL LUNAS
                         if ($transaction->customer_email) {
                             $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaction->invoice_number;
@@ -294,6 +331,33 @@ class TransactionController extends Controller
                         }
                     }
                     \Log::info("Invoice {$request->order_id} Pending. Email Tagihan Dikirim.");
+                }
+                
+                // KONDISI C: GAGAL / EXPIRED (Batal Bayar)
+                else if (in_array($request->transaction_status, ['deny', 'cancel', 'expire', 'failure'])) {
+                    if ($transaction->payment_status == 'pending') {
+                        // Update status transaksi
+                        $transaction->update([
+                            'payment_status' => 'failed'
+                        ]);
+
+                        // Kembalikan Stok Barang (Restore)
+                        if ($transaction->details) {
+                            foreach ($transaction->details as $detail) {
+                                $product = Product::find($detail->product_id);
+                                if ($product) {
+                                    $product->increment('stok', $detail->qty);
+                                    InventoryLog::create([
+                                        'product_id' => $product->id,
+                                        'tipe' => 'masuk',
+                                        'jumlah' => $detail->qty,
+                                        'keterangan' => 'Restore Stok Gagal Bayar (' . $transaction->invoice_number . ')',
+                                    ]);
+                                }
+                            }
+                        }
+                        \Log::info("Invoice {$request->order_id} Batal/Expired. Stok dikembalikan.");
+                    }
                 }
 
             }

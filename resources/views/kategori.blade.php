@@ -32,7 +32,7 @@
                     <div class="card-footer">
                         <p>Rp {{ number_format($p->harga, 0, ',', '.') }}</p>
                         <div>
-                            <button class="btn-add-cart" onclick="addToCart('{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
+                            <button class="btn-add-cart" onclick="addToCart('{{ $p->id }}', '{{ $p->nama }}', {{ $p->harga }}, '{{ asset($p->gambar) }}')">Beli</button>
                             <a href="{{ url('/detail/' . $p->id) }}" class="btn-brown">Detail</a>
                         </div>
                     </div>

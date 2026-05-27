@@ -49,6 +49,30 @@
                 <span style="background: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Web (Online)</span>
             </div>
             @endif
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #333; display: block; margin-bottom: 10px;">Detail Pesanan:</strong>
+                @foreach($transaksi->details as $detail)
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                        <div>
+                            <span style="color: #333; font-weight: 500; display: block;">{{ $detail->product->nama }} (x{{ $detail->qty }})</span>
+                            <span style="color: #888; font-size: 0.85rem;">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+                        </div>
+                        @if($transaksi->order_status == 'selesai')
+                            @php
+                                $hasReviewed = \App\Models\Review::where('transaction_id', $transaksi->id)
+                                    ->where('product_id', $detail->product_id)
+                                    ->exists();
+                            @endphp
+                            @if($hasReviewed)
+                                <span style="background: #e8f5e9; color: #388e3c; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;"><i class="fa-solid fa-check"></i> Telah Dinilai</span>
+                            @else
+                                <a href="{{ route('review.create', ['invoice' => $transaksi->invoice_number, 'product_id' => $detail->product_id]) }}" style="background: #a67c52; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-decoration: none; display: inline-block;"><i class="fa-solid fa-star"></i> Beri Penilaian</a>
+                            @endif
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
             <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.1rem;">
                 <strong>Total Bayar</strong>
                 <strong style="color: #a67c52;">Rp {{ number_format($transaksi->total_amount, 0, ',', '.') }}</strong>

@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\InventoryController;
@@ -69,6 +70,11 @@ Route::view('/custom-order', 'custom-order');
 
 Route::post('/checkout/process', [TransactionController::class, 'processCheckout'])->name('checkout.process')->middleware('throttle:5,1');
 Route::get('/checkout/invoice/{invoice}', [TransactionController::class, 'checkoutInvoice'])->name('checkout.invoice');
+
+// Review Routes
+Route::get('/review/{invoice}/{product_id}', [ReviewController::class, 'create'])->name('review.create');
+Route::post('/review/{invoice}/{product_id}', [ReviewController::class, 'store'])->name('review.store');
+
 Route::post('/checkout/custom/process', [TransactionController::class, 'processCustomCheckout'])->name('checkout.custom.process')->middleware('throttle:5,1');
 
 // Midtrans Webhook Callback

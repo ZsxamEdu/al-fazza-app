@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="card-img-wrapper">
-                        <div class="rating"><i class="fa-solid fa-star"></i>4.9</div>
+                        <div class="rating"><i class="fa-solid fa-star"></i>{{ number_format($p->rating, 1) }}</div>
                         <img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}">
                     </div>
                     <div class="card-footer">

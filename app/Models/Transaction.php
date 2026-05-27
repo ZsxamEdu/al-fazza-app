@@ -33,4 +33,9 @@ class Transaction extends Model
     {
         return $this->hasMany(TransactionDetail::class, 'transaction_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'transaction_id');
+    }
 }

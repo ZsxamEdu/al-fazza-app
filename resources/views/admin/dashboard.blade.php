@@ -2,46 +2,42 @@
 
 @section('title', 'Dashboard')
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endpush
-
 @section('content')
-    <div class="header">
+    <div class="flex justify-between items-center mb-8">
         <h1>Dashboard Ringkasan</h1>
         <p>Selamat datang, <strong>{{ Auth::user()->name }}</strong></p>
     </div>
 
     @if($stokMenipis->count() > 0)
-    <div style="background: #ffebee; color: #d32f2f; padding: 15px 20px; border-radius: 8px; border-left: 5px solid #d32f2f; margin-bottom: 20px; font-weight: bold; display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem;"></i>
+    <div class="bg-bg-danger-light text-text-danger-dark py-4 px-5 rounded-lg border-l-4 border-l-danger mb-5 font-bold flex items-center gap-2.5">
+        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
         <span>Peringatan Darurat: Terdapat {{ $stokMenipis->count() }} produk yang stoknya hampir habis (< 10). Segera lakukan produksi ulang!</span>
     </div>
     @endif
 
-    <div class="card-info-container">
-        <div class="card-info">
+    <div class="flex gap-5 mb-8">
+        <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-primary-brown">
             <h3>Total Varian Produk</h3>
-            <div class="number">{{ $totalProduk }}</div>
+            <div class="text-3xl font-bold text-dark-brown">{{ $totalProduk }}</div>
         </div>
-        <div class="card-info border-danger">
+        <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-danger">
             <h3>Stok Menipis (< 10)</h3>
-            <div class="number text-danger">{{ $stokMenipis->count() }}</div>
+            <div class="text-3xl font-bold text-danger">{{ $stokMenipis->count() }}</div>
         </div>
-        <div class="card-info border-warning" style="border-left-color: #f39c12;">
+        <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-warning">
             <h3>Pesanan Pending</h3>
-            <div class="number text-warning" style="color: #f39c12;">{{ $pesananBaru }}</div>
+            <div class="text-3xl font-bold text-warning">{{ $pesananBaru }}</div>
         </div>
-        <div class="card-info border-success">
+        <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-success">
             <h3>Total Penjualan Bulan Ini</h3>
-            <div class="number text-success">Rp {{ number_format($penjualanBulanIni, 0, ',', '.') }}</div>
+            <div class="text-3xl font-bold text-success">Rp {{ number_format($penjualanBulanIni, 0, ',', '.') }}</div>
         </div>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="content-box">
-            <h3><i class="fa-solid fa-triangle-exclamation" style="color: #d32f2f;"></i> Stok Menipis</h3>
-            <hr class="content-divider">
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-5">
+        <div class="bg-white p-5 rounded-lg shadow-sm">
+            <h3><i class="fa-solid fa-triangle-exclamation text-danger"></i> Stok Menipis</h3>
+            <hr class="border-0 border-t border-border-light my-4">
             @if($stokMenipis->count() > 0)
                 <ul class="stock-list">
                     @foreach($stokMenipis as $item)
@@ -56,10 +52,10 @@
             @endif
         </div>
 
-        <div class="content-box">
-            <h3><i class="fa-solid fa-chart-line" style="color: var(--primary-brown);"></i> Pendapatan 7 Hari Terakhir</h3>
-            <hr class="content-divider">
-            <div class="chart-container">
+        <div class="bg-white p-5 rounded-lg shadow-sm">
+            <h3><i class="fa-solid fa-chart-line text-primary-brown"></i> Pendapatan 7 Hari Terakhir</h3>
+            <hr class="border-0 border-t border-border-light my-4">
+            <div class="relative h-[250px] w-full">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
@@ -70,3 +66,7 @@
         window.chartData = @json($dataPendapatan);
     </script>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@endpush

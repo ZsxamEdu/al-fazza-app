@@ -62,6 +62,7 @@ Route::middleware(['auth', 'role:kasir'])->group(function () {
     Route::get('/kasir/pos', [KasirController::class, 'index'])->name('kasir.pos');
     Route::post('/kasir/proses', [KasirController::class, 'prosesPos'])->name('kasir.proses');
     Route::get('/kasir/selesai/{id}', [KasirController::class, 'selesai'])->name('kasir.selesai');
+    Route::get('/kasir/cetak/{id}', [KasirController::class, 'cetakStruk'])->name('kasir.cetak');
 });
 
 // RUTE TRANSAKSI & STATIS

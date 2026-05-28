@@ -3,7 +3,7 @@
 @section('title', 'Manajemen Pesanan')
 
 @section('content')
-    <div class="header-action">
+    <div class="flex justify-between items-center mb-8">
         <div>
             <h1>Manajemen Pesanan</h1>
             <p>Kelola dan periksa detail pesanan pelanggan.</p>
@@ -11,12 +11,12 @@
     </div>
 
     <!-- Filter Section -->
-    <div class="filter-container" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <form action="{{ route('admin.pesanan.index') }}" method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+    <div class="bg-white p-5 rounded-lg mb-5">
+        <form action="{{ route('admin.pesanan.index') }}" method="GET" class="flex gap-4 items-end flex-wrap">
             
-            <div style="flex: 1; min-width: 150px;">
+            <div class="flex-1 min-w-40">
                 <label>Filter Status:</label>
-                <select name="status" class="form-control" style="width: 100%; padding: 8px;">
+                <select name="status" class="border border-border-medium rounded w-full p-2">
                     <option value="">Semua Status</option>
                     <option value="baru" {{ request('status') == 'baru' ? 'selected' : '' }}>Pesanan Baru</option>
                     <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Sedang Dibuat</option>
@@ -25,9 +25,9 @@
                 </select>
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
+            <div class="flex-1 min-w-40">
                 <label>Jenis Pesanan:</label>
-                <select name="jenis" class="form-control" style="width: 100%; padding: 8px;">
+                <select name="jenis" class="border border-border-medium rounded w-full p-2">
                     <option value="">Semua Jenis</option>
                     <option value="online" {{ request('jenis') == 'online' ? 'selected' : '' }}>Online (Roti Biasa)</option>
                     <option value="custom-order" {{ request('jenis') == 'custom-order' ? 'selected' : '' }}>Custom Cake</option>
@@ -36,67 +36,67 @@
             </div>
 
             <div>
-                <button type="submit" class="btn-tambah" style="padding: 10px 20px;"><i class="fa-solid fa-filter"></i> Filter</button>
-                <a href="{{ route('admin.pesanan.index') }}" class="btn-tambah" style="background: #e2e8f0; color: #333; text-decoration: none; padding: 10px 20px;">Reset</a>
+                <button type="submit" class="bg-success text-white py-2.5 px-5 rounded-md font-bold hover:bg-green-700 transition inline-block"><i class="fa-solid fa-filter"></i> Filter</button>
+                <a href="{{ route('admin.pesanan.index') }}" class="bg-slate-200 text-text-dark py-2.5 px-5 rounded-md font-bold hover:bg-slate-300 transition inline-block no-underline">Reset</a>
             </div>
         </form>
     </div>
 
-    <div class="table-container">
-        <table class="admin-table">
+    <div class="bg-white p-5 rounded-lg shadow-sm overflow-x-auto">
+        <table class="w-full border-collapse text-left [&_th]:bg-primary-brown [&_th]:text-white [&_th]:py-3 [&_th]:px-4 [&_td]:py-3 [&_td]:px-4 [&_td]:border-b [&_td]:border-border-light [&_td]:align-middle [&_tr:hover]:bg-gray-50">
             <thead>
-                <tr>
-                    <th>Invoice & Waktu</th>
-                    <th>Info Pelanggan & Pengiriman</th>
-                    <th>Detail Item / Custom Cake</th>
-                    <th>Status</th>
-                    <th>Ubah Status</th>
+                <tr class="hover:bg-gray-50">
+                    <th class="bg-primary-brown text-white py-3 px-4">Invoice & Waktu</th>
+                    <th class="bg-primary-brown text-white py-3 px-4">Info Pelanggan & Pengiriman</th>
+                    <th class="bg-primary-brown text-white py-3 px-4">Detail Item / Custom Cake</th>
+                    <th class="bg-primary-brown text-white py-3 px-4">Status</th>
+                    <th class="bg-primary-brown text-white py-3 px-4">Ubah Status</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($pesanan as $p)
-                <tr>
+                <tr class="hover:bg-gray-50">
                     <!-- Kolom 1: Invoice -->
-                                        <td style="vertical-align: top;">
+                    <td class="align-top py-3 px-4 border-b border-border-light align-middle">
                         <strong>{{ $p->invoice_number }}</strong><br>
                         <small>Dipesan: {{ $p->created_at->format('d M Y') }}</small><br>
                         
                         <!-- Tampilkan Tanggal Harus Dikirim -->
                         @if($p->delivery_date)
-                            <div style="margin-top: 5px; padding: 4px; background: #fff3e0; border: 1px solid #ffe0b2; border-radius: 4px; font-size: 11px; color: #e65100; display: inline-block;">
+                            <div class="inline-block mt-1 p-1 bg-bg-warning-light border border-orange-200 rounded text-xs text-orange-600">
                                 <i class="fa-regular fa-calendar-check"></i> Krm: <strong>{{ \Carbon\Carbon::parse($p->delivery_date)->format('d M Y') }}</strong>
                             </div><br>
                         @endif
 
-                        <span style="display: inline-block; margin-top: 5px; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; 
-                            {{ $p->order_type == 'custom-order' ? 'background: #9b59b6; color: white;' : ($p->order_type == 'kasir' ? 'background: #a67c52; color: white;' : 'background: #3498db; color: white;') }}">
+                        <span class="inline-block mt-1 py-1 px-1.5 rounded text-[11px] font-bold 
+                            {{ $p->order_type == 'custom-order' ? 'bg-purple-500 text-white' : ($p->order_type == 'kasir' ? 'bg-primary-brown text-white' : 'bg-blue-500 text-white') }}">
                             {{ strtoupper($p->order_type) }}
                         </span>
                     </td>
                     
                     <!-- Kolom 2: Info Pengiriman -->
-                    <td style="vertical-align: top; max-width: 250px;">
+                    <td class="align-top max-w-64 py-3 px-4 border-b border-border-light align-middle">
                         <strong>{{ $p->customer_name }}</strong><br>
                         <i class="fa-solid fa-phone"></i> {{ $p->customer_phone ?? '-' }}<br>
-                        <hr style="margin: 5px 0; border: 0.5px solid #eee;">
-                        <span style="font-size: 12px; color: #555;">{{ $p->delivery_address ?? 'Beli di Tempat (Kasir)' }}</span>
+                        <hr class="my-1 border-t border-border-light">
+                        <span class="text-xs text-text-medium">{{ $p->delivery_address ?? 'Beli di Tempat (Kasir)' }}</span>
                         @if($p->notes && $p->notes != '-')
-                            <div style="margin-top: 5px; font-size: 11px; color: #d35400; background: #fdf2e9; padding: 4px; border-radius: 4px;">
+                            <div class="mt-1 text-xs text-orange-600 bg-orange-50 p-1 rounded">
                                 <strong>Catatan:</strong> {{ $p->notes }}
                             </div>
                         @endif
                     </td>
                     
                     <!-- Kolom 3: Detail Produk -->
-                    <td style="vertical-align: top; max-width: 250px;">
+                    <td class="align-top max-w-64 py-3 px-4 border-b border-border-light align-middle">
                         @if($p->order_type == 'custom-order')
                             <!-- Tampilkan Detail Custom Cake -->
-                            <div style="font-size: 13px; color: #333; background: #f9f9f9; padding: 8px; border-radius: 6px;">
+                            <div class="text-sm text-text-dark bg-gray-50 p-2 rounded-md">
                                 {!! str_replace(', ', '<br>', $p->custom_details) !!}
                             </div>
                         @else
                             <!-- Tampilkan List Roti Biasa -->
-                            <ul style="padding-left: 20px; margin: 0; font-size: 13px;">
+                            <ul class="pl-5 m-0 text-sm">
                                 @foreach($p->details as $detail)
                                     <li>{{ $detail->product->nama ?? 'Produk Dihapus' }} (x{{ $detail->qty }})</li>
                                 @endforeach
@@ -105,24 +105,24 @@
                     </td>
 
                     <!-- Kolom 4: Badge Status -->
-                    <td style="vertical-align: top;">
+                    <td class="align-top py-3 px-4 border-b border-border-light align-middle">
                         @if($p->order_status == 'baru')
-                            <span style="background: #e74c3c; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Pesanan Baru</span>
+                            <span class="bg-red-500 text-white py-1 px-2 rounded text-xs">Pesanan Baru</span>
                         @elseif($p->order_status == 'diproses')
-                            <span style="background: #f39c12; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Diproses/Dibuat</span>
+                            <span class="bg-warning text-white py-1 px-2 rounded text-xs">Diproses/Dibuat</span>
                         @elseif($p->order_status == 'dikirim')
-                            <span style="background: #3498db; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Sedang Dikirim</span>
+                            <span class="bg-blue-500 text-white py-1 px-2 rounded text-xs">Sedang Dikirim</span>
                         @else
-                            <span style="background: #2ecc71; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Selesai</span>
+                            <span class="bg-success text-white py-1 px-2 rounded text-xs">Selesai</span>
                         @endif
                     </td>
 
                     <!-- Kolom 5: Form Ubah Status -->
-                    <td style="vertical-align: top;">
+                    <td class="align-top py-3 px-4 border-b border-border-light align-middle">
                         <form action="{{ route('admin.pesanan.updateStatus', $p->id) }}" method="POST">
                             @csrf
                             @method('PUT')
-                            <select name="order_status" onchange="confirmStatusChange(this)" style="padding: 6px; border-radius: 4px; width: 100%;">
+                            <select name="order_status" onchange="confirmStatusChange(this)" class="p-1.5 rounded w-full border border-border-medium">
                                 <option value="baru" {{ $p->order_status == 'baru' ? 'selected' : '' }}>Baru</option>
                                 <option value="diproses" {{ $p->order_status == 'diproses' ? 'selected' : '' }}>Diproses</option>
                                 <option value="dikirim" {{ $p->order_status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
@@ -132,8 +132,8 @@
                     </td>
                 </tr>
                 @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px;">Tidak ada pesanan.</td>
+                <tr class="hover:bg-gray-50">
+                    <td colspan="5" class="text-center p-8">Tidak ada pesanan.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -141,7 +141,7 @@
     </div>
 
     {{-- Navigasi Halaman --}}
-    <div style="margin-top: 15px;">
+    <div class="mt-4">
         {{ $pesanan->links('vendor.pagination.admin') }}
     </div>
 @endsection

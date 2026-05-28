@@ -132,7 +132,7 @@
                         </div>
                         <div class="relative w-full mb-4">
                             <div class="absolute top-2.5 left-10 bg-white/95 py-1.5 px-2.5 rounded text-sm font-extrabold text-text-dark flex items-center gap-1.5 shadow-[0_2px_5px_rgba(0,0,0,0.1)]"><i class="fa-solid fa-star text-star"></i>{{ $item->rating }}</div>
-                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-56 rounded my-2.5 px-8 object-cover block">
+                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-48 rounded my-2.5 px-8 object-cover block">
                         </div>
                         <div class="flex justify-between items-center px-8 pb-5 flex-col gap-2">
                             <p class="text-xl font-bold text-left w-full">Rp {{ number_format($item->harga, 0, ',', '.') }}</p>

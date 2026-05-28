@@ -176,23 +176,23 @@ function updateCartUI() {
             grandTotal += sub;
     // GANTI MENJADI SEPERTI INI:
             return `
-                <div class="cart-item" style="display: flex; align-items: center; margin-bottom: 15px; position: relative;">
+                <div class="flex items-center mb-4 relative">
                     
-                    <a href="/produk/${item.id}" style="display: flex; text-decoration: none; color: inherit; align-items: center; gap: 15px; width: 60%;">
-                        <img src="${item.image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                    <a href="/produk/${item.id}" class="flex items-center gap-4 w-[60%] no-underline text-inherit">
+                        <img src="${item.image}" alt="${item.name}" class="w-15 h-15 object-cover rounded-lg">
                         <div>
-                            <h4 style="margin: 0; font-size: 1rem;">${item.name}</h4>
-                            <p style="margin: 5px 0 0; color: #a67c52; font-weight: bold;">Rp ${item.price.toLocaleString('id-ID')}</p>
+                            <h4 class="m-0 text-base">${item.name}</h4>
+                            <p class="m-0 mt-1 text-primary-brown font-bold">Rp ${item.price.toLocaleString('id-ID')}</p>
                         </div>
                     </a>
 
-                    <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; margin-right: 30px;">
-                        <button type="button" onclick="kurangiQty(${index})" style="width: 25px; height: 25px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; display: flex; justify-content: center; align-items: center;">-</button>
-                        <span style="font-weight: bold;">${item.quantity}</span>
-                        <button type="button" onclick="tambahQty(${index})" style="width: 25px; height: 25px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; display: flex; justify-content: center; align-items: center;">+</button>
+                    <div class="flex items-center gap-2.5 ml-auto mr-8">
+                        <button type="button" onclick="kurangiQty(${index})" class="w-6 h-6 border border-border-dark bg-white rounded cursor-pointer flex justify-center items-center hover:bg-gray-100">-</button>
+                        <span class="font-bold">${item.quantity}</span>
+                        <button type="button" onclick="tambahQty(${index})" class="w-6 h-6 border border-border-dark bg-white rounded cursor-pointer flex justify-center items-center hover:bg-gray-100">+</button>
                     </div>
 
-                    <button type="button" class="remove-item" onclick="removeFromCart(${index})" style="position: absolute; right: 0; background: transparent; border: none; color: #e74c3c; cursor: pointer; font-size: 1.1rem;">
+                    <button type="button" onclick="removeFromCart(${index})" class="absolute right-0 bg-transparent border-none text-danger cursor-pointer text-[1.1rem] hover:text-red-700">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>
@@ -505,17 +505,17 @@ function renderPosCart() {
         grandTotal += subtotal;
 
         container.innerHTML += `
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <h4>${item.nama}</h4>
-                    <div class="cart-item-price">Rp ${item.harga.toLocaleString('id-ID')}</div>
+            <div class="flex justify-between items-center pb-4 mb-4 border-b border-dashed border-border-light">
+                <div>
+                    <h4 class="text-[0.95rem] text-text-dark m-0 mb-1">${item.nama}</h4>
+                    <div class="text-[0.85rem] text-text-light">Rp ${item.harga.toLocaleString('id-ID')}</div>
                 </div>
-                <div class="cart-item-qty">
-                    <button class="btn-qty" onclick="changePosQty(${item.id}, -1)">-</button>
-                    <span>${item.qty}</span>
-                    <button class="btn-qty" onclick="changePosQty(${item.id}, 1)">+</button>
+                <div class="flex items-center gap-3">
+                    <button class="bg-bg-light border-none w-6 h-6 rounded-full cursor-pointer font-bold hover:bg-border-medium transition" onclick="changePosQty(${item.id}, -1)">-</button>
+                    <span class="font-semibold">${item.qty}</span>
+                    <button class="bg-bg-light border-none w-6 h-6 rounded-full cursor-pointer font-bold hover:bg-border-medium transition" onclick="changePosQty(${item.id}, 1)">+</button>
                 </div>
-                <div style="font-weight: bold;">Rp ${subtotal.toLocaleString('id-ID')}</div>
+                <div class="font-bold">Rp ${subtotal.toLocaleString('id-ID')}</div>
             </div>
         `;
     });
@@ -539,10 +539,12 @@ function openModal() {
     toggleCashInput();
 
     document.getElementById('payment-modal').classList.add('active');
+    document.getElementById('payment-modal').classList.remove('hidden');
 }
 
 function closeModal() {
     document.getElementById('payment-modal').classList.remove('active');
+    document.getElementById('payment-modal').classList.add('hidden');
 }
 
 function toggleCashInput() {

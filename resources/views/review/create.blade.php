@@ -10,7 +10,7 @@
 
         <div class="product-info">
             @if($product->gambar)
-                <img src="{{ asset($product->gambar) }}" alt="{{ $product->nama }}">
+                <img loading="lazy" src="{{ asset($product->gambar) }}" alt="{{ $product->nama }}">
             @endif
             <div>
                 <h3>{{ $product->nama }}</h3>

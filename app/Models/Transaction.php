@@ -27,6 +27,7 @@ class Transaction extends Model
         'amount_paid',
         'change_amount',
         'snap_token',
+        'token',
     ];
 
     public function details()

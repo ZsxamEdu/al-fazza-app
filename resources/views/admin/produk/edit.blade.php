@@ -43,8 +43,10 @@
 
                 <div class="flex flex-col gap-2">
                     <label>Stok Saat Ini</label>
-                    <input type="number" name="stok" class="form-input" min="0" value="{{ old('stok', $product->stok) }}" required>
-                    @error('stok') <span class="text-danger text-sm mt-1">{{ $message }}</span> @enderror
+                    <div class="form-input bg-gray-100 font-bold text-lg text-text-darker">{{ $product->stok }} pcs</div>
+                    <div class="bg-blue-50 border-l-4 border-bg-info p-2 text-sm text-text-info mt-1">
+                        <i class="fa-solid fa-circle-info"></i> Informasi: Perubahan stok produk hanya dapat dilakukan melalui menu Kelola Stok.
+                    </div>
                 </div>
 
                 <div class="flex flex-col gap-2">
@@ -55,7 +57,7 @@
                     
                     <div class="mt-2.5">
                         <span class="text-sm text-text-light block mb-1">Foto Saat Ini:</span>
-                        <img src="{{ asset($product->gambar) }}" alt="Foto Lama" class="h-20 rounded border border-border-medium">
+                        <img loading="lazy" src="{{ asset($product->gambar) }}" alt="Foto Lama" class="h-20 rounded border border-border-medium">
                     </div>
                 </div>
 

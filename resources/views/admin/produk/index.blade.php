@@ -11,6 +11,38 @@
         <a href="{{ route('admin.produk.create') }}" class="bg-success text-white py-2.5 px-5 rounded-md font-bold hover:bg-green-700 transition inline-block"><i class="fa-solid fa-plus"></i> Tambah Produk</a>
     </div>
 
+    <!-- Filter Section -->
+    <div class="bg-white p-5 rounded-lg mb-5">
+        <form action="{{ route('admin.produk.index') }}" method="GET" class="flex gap-4 items-end flex-wrap text-sm lg:text-base">
+            
+            <div class="flex-1 min-w-40">
+                <label>Cari Nama Produk:</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik nama roti..." class="border border-border-medium rounded w-full p-2">
+            </div>
+
+            <div class="flex-1 min-w-40">
+                <label>Kategori:</label>
+                <select name="kategori" class="border border-border-medium rounded w-full p-2">
+                    <option value="">Semua Kategori</option>
+                    <option value="bolu" {{ request('kategori') == 'bolu' ? 'selected' : '' }}>Bolu</option>
+                    <option value="cookies" {{ request('kategori') == 'cookies' ? 'selected' : '' }}>Cookies</option>
+                    <option value="pastry" {{ request('kategori') == 'pastry' ? 'selected' : '' }}>Pastry</option>
+                    <option value="roti" {{ request('kategori') == 'roti' ? 'selected' : '' }}>Roti</option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-2 mb-2">
+                <input type="checkbox" id="stok_menipis" name="stok_menipis" value="1" {{ request('stok_menipis') == '1' ? 'checked' : '' }} class="w-4 h-4 text-primary-brown">
+                <label for="stok_menipis" class="text-danger font-bold">Stok < 10 (Menipis)</label>
+            </div>
+
+            <div>
+                <button type="submit" class="bg-success text-white py-2.5 px-5 rounded-md font-bold hover:bg-green-700 transition inline-block"><i class="fa-solid fa-filter"></i> Filter</button>
+                <a href="{{ route('admin.produk.index') }}" class="bg-slate-200 text-text-dark py-2.5 px-5 rounded-md font-bold hover:bg-slate-300 transition inline-block no-underline">Reset</a>
+            </div>
+        </form>
+    </div>
+
     @if(session('success'))
         <div class="bg-green-100 text-green-800 p-4 rounded-md mb-5 border border-green-200">
             <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
@@ -34,7 +66,7 @@
                 @foreach($products as $index => $p)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3 px-4 border-b border-border-light align-middle">{{ $index + 1 }}</td>
-                    <td class="py-3 px-4 border-b border-border-light align-middle"><img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-16 h-16 object-cover rounded border border-border-medium"></td>
+                    <td class="py-3 px-4 border-b border-border-light align-middle"><img loading="lazy" src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-16 h-16 object-cover rounded border border-border-medium"></td>
                     <td class="py-3 px-4 border-b border-border-light align-middle"><strong>{{ $p->nama }}</strong><br><small class="text-text-light">{{ $p->tipe }}</small></td>
                     <td class="py-3 px-4 border-b border-border-light align-middle">{{ ucfirst($p->kategori) }}</td>
                     <td class="py-3 px-4 border-b border-border-light align-middle">Rp {{ number_format($p->harga, 0, ',', '.') }}</td>
@@ -59,7 +91,7 @@
         </table>
     </div>
     <div class="mt-5">
-        {{ $products->links() }}
+        {{ $products->links('vendor.pagination.admin') }}
     </div>
 @endsection
 
@@ -78,6 +110,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                showLoader();
                 document.getElementById('delete-form-' + id).submit();
             }
         })

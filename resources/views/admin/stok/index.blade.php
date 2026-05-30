@@ -32,7 +32,12 @@
                 @forelse($logs as $log)
                 <tr class="hover:bg-gray-50">
                     <td class="py-3 px-4 border-b border-border-light align-middle">{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y, H:i') }}</td>
-                    <td class="py-3 px-4 border-b border-border-light align-middle"><strong>{{ $log->product->nama }}</strong></td>
+                    <td class="py-3 px-4 border-b border-border-light align-middle">
+                        <strong>{{ $log->product->nama }}</strong>
+                        @if($log->product->trashed())
+                            <span class="text-xs text-red-500 font-normal italic ml-1">(Dihapus)</span>
+                        @endif
+                    </td>
                     <td class="py-3 px-4 border-b border-border-light align-middle">
                         @if($log->tipe == 'masuk')
                             <span class="py-1 px-2.5 rounded-full text-sm font-bold bg-green-50 text-green-800 inline-block"><i class="fa-solid fa-arrow-down"></i> Masuk</span>

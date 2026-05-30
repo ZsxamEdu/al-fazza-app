@@ -57,14 +57,18 @@ class CheckoutService
                 ];
             }
 
+            $token = \Illuminate\Support\Str::random(32);
+
             $transactionData = array_merge([
                 'invoice_number' => $invoice,
                 'total_amount' => $serverGrandTotal,
                 'payment_status' => $paymentStatus,
                 'order_type' => $orderType,
+                'order_status' => ($orderType === 'kasir') ? 'selesai' : 'baru',
                 'payment_method' => $paymentMethod,
                 'amount_paid' => $amountPaid,
                 'change_amount' => $changeAmount,
+                'token' => $token,
             ], $customerData);
 
             $transaction = Transaction::create($transactionData);
@@ -116,7 +120,7 @@ class CheckoutService
                 // Kirim email pending
                 if (!empty($customerData['customer_email'])) {
                     try {
-                        $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaction->invoice_number;
+                        $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaction->invoice_number . '?token=' . $transaction->token;
                         Mail::send('emails.invoice', ['transaction' => $transaction, 'linkInvoice' => $linkInvoice], function ($message) use ($transaction) {
                             $message->to($transaction->customer_email, $transaction->customer_name)
                                     ->subject('Tagihan Pesanan ' . $transaction->invoice_number);
@@ -133,7 +137,8 @@ class CheckoutService
                 'success' => true,
                 'transaction' => $transaction,
                 'snap_token' => $snapToken,
-                'invoice' => $invoice
+                'invoice' => $invoice,
+                'token' => $token
             ];
             
         } catch (Exception $e) {
@@ -149,6 +154,8 @@ class CheckoutService
     {
         DB::beginTransaction();
         try {
+            $token = \Illuminate\Support\Str::random(32);
+
             $transaction = Transaction::create([
                 'invoice_number' => $invoice,
                 'user_id' => $data['user_id'] ?? null,
@@ -163,6 +170,7 @@ class CheckoutService
                 'total_amount' => $totalAmount, 
                 'payment_status' => 'pending',
                 'payment_method' => 'Midtrans (Pending)',
+                'token' => $token,
             ]);
 
             $this->configureMidtrans();
@@ -185,7 +193,7 @@ class CheckoutService
             // Kirim email pending
             if (!empty($data['customer_email'])) {
                 try {
-                    $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaction->invoice_number;
+                    $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaction->invoice_number . '?token=' . $transaction->token;
                     Mail::send('emails.invoice', ['transaction' => $transaction, 'linkInvoice' => $linkInvoice], function ($message) use ($transaction) {
                         $message->to($transaction->customer_email, $transaction->customer_name)
                                 ->subject('Tagihan Pesanan ' . $transaction->invoice_number);
@@ -200,7 +208,8 @@ class CheckoutService
             return [
                 'success' => true,
                 'snap_token' => $snapToken,
-                'invoice' => $invoice
+                'invoice' => $invoice,
+                'token' => $token
             ];
         } catch (Exception $e) {
             DB::rollBack();
@@ -258,7 +267,7 @@ class CheckoutService
 
             if ($transaksi->customer_email && in_array($transaksi->payment_status, ['success', 'failed'])) {
                 try {
-                    $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaksi->invoice_number;
+                    $linkInvoice = config('app.url') . '/checkout/invoice/' . $transaksi->invoice_number . '?token=' . $transaksi->token;
                     $emailTemplate = ($transaksi->payment_status == 'success') ? 'emails.invoice-paid' : 'emails.invoice';
                     
                     Mail::send($emailTemplate, ['transaction' => $transaksi, 'linkInvoice' => $linkInvoice], function ($message) use ($transaksi) {

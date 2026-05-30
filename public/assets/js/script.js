@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     document.querySelector('.btn-checkout')?.addEventListener('click', () => {
-        if(cart.length === 0) return alert("Keranjang kosong!");
+        if(cart.length === 0) return Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Keranjang belanja kosong!' });
         window.location.href = '/checkout';
     });
 
@@ -169,12 +169,35 @@ function addToCart(id, nama, harga, gambar, qty = 1) {
     else cart.push({ id: id, name: nama, price: harga, quantity: qty, image: gambar });
     
     saveCart();
-    alert(`${qty} ${nama} berhasil ditambahkan!`);
+    Swal.fire({ 
+        toast: true,
+        position: 'top-end',
+        icon: 'success', 
+        title: 'Berhasil!', 
+        text: `${qty} ${nama} berhasil ditambahkan!`, 
+        showConfirmButton: false, 
+        timer: 1500 
+    });
 }
 
 function removeFromCart(index) {
-    cart.splice(index, 1);
-    saveCart();
+    // Jika qty 1 dan ditekan minus, tanyakan apakah mau dihapus
+    Swal.fire({
+        title: 'Hapus Produk?',
+        text: "Keluarkan produk ini dari keranjang belanja?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#a67c52',
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            cart.splice(index, 1);
+            localStorage.setItem('alfazza_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+    });
 }
 
 function updateCartUI() {
@@ -191,7 +214,7 @@ function updateCartUI() {
             grandTotal += sub;
     // GANTI MENJADI SEPERTI INI:
             return `
-                <div class="flex items-center mb-4 relative">
+                <div class="flex items-center mb-4 relative border-b border-border-light border-dashed pb-4">
                     
                     <a href="/produk/${item.id}" class="flex items-center gap-4 w-[60%] no-underline text-inherit">
                         <img src="${item.image}" alt="${item.name}" class="w-15 h-15 object-cover rounded-lg">
@@ -231,7 +254,7 @@ function renderCheckoutSummary() {
     if (!list) return;
 
     if (cart.length === 0) {
-        alert("Keranjang kosong!");
+        Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Keranjang belanja kosong!' });
         window.location.href = '/';
         return;
     }
@@ -267,12 +290,7 @@ function kurangiQty(index) {
         localStorage.setItem('alfazza_cart', JSON.stringify(cart));
         updateCartUI();
     } else {
-        // Jika qty 1 dan ditekan minus, tanyakan apakah mau dihapus
-        if(confirm("Hapus produk ini dari keranjang?")) {
-            cart.splice(index, 1);
-            localStorage.setItem('alfazza_cart', JSON.stringify(cart));
-            updateCartUI();
-        }
+        removeFromCart(index);
     }
 }
 
@@ -309,76 +327,76 @@ function prosesCustomOrderMidtrans() {
 
     // 2. Validasi (PALANG PINTU)
     if (!nama || nama.trim() === "") {
-        alert("⚠️ Mohon lengkapi Nama Anda!");
+        Swal.fire({ icon: 'warning', text: 'Mohon lengkapi Nama Anda!' });
         document.getElementById('co_nama').focus();
         return; 
     }
 
     const regexHurufCustom = /^[A-Za-z\s]+$/;
     if (!regexHurufCustom.test(nama)) {
-        alert("⚠️ Nama hanya boleh berisi huruf dan spasi (tanpa angka/simbol)!");
+        Swal.fire({ icon: 'warning', text: 'Nama hanya boleh berisi huruf dan spasi (tanpa angka/simbol)!' });
         document.getElementById('co_nama').focus();
         return;
     }
 
     if (!email || email.trim() === "") {
-        alert('⚠️ Mohon isi Email Anda!');
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Email Anda!' });
         document.getElementById('co_email').focus();
         return;
     }
 
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexEmail.test(email)) {
-        alert('⚠️ Format Email tidak valid! (Contoh: nama@email.com)');
+        Swal.fire({ icon: 'warning', text: 'Format Email tidak valid! (Contoh: nama@email.com)' });
         document.getElementById('co_email').focus();
         return;
     }
 
     if (!nohp || nohp.trim() === "") {
-        alert("⚠️ Mohon isi No WhatsApp!");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi No WhatsApp!' });
         document.getElementById('co_nohp').focus();
         return; 
     }
 
     // === DETEKTOR SPESIFIKASI KUE (Wajib Pilih) ===
     if (!ukuran || ukuran === "") {
-        alert("⚠️ Mohon pilih Ukuran Kue terlebih dahulu!");
+        Swal.fire({ icon: 'warning', text: 'Mohon pilih Ukuran Kue terlebih dahulu!' });
         document.getElementById('co_ukuran').focus();
         return; 
     }
     
     if (!bentuk || bentuk === "") {
-        alert("⚠️ Mohon pilih Bentuk Kue!");
+        Swal.fire({ icon: 'warning', text: 'Mohon pilih Bentuk Kue!' });
         document.getElementById('co_bentuk').focus();
         return; 
     }
 
     if (!rasa || rasa === "") {
-        alert("⚠️ Mohon pilih Base Cake (Rasa)!");
+        Swal.fire({ icon: 'warning', text: 'Mohon pilih Base Cake (Rasa)!' });
         document.getElementById('co_rasa').focus();
         return; 
     }
 
     if (!isian || isian === "") {
-        alert("⚠️ Mohon pilih Filling / Isian!");
+        Swal.fire({ icon: 'warning', text: 'Mohon pilih Filling / Isian!' });
         document.getElementById('co_isian').focus();
         return; 
     }
 
     if (!tema || tema.trim() === "") {
-        alert("⚠️ Mohon isi Tema/Warna kue!");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Tema/Warna kue!' });
         document.getElementById('co_tema').focus();
         return; 
     }
 
     if (!tulisan || tulisan.trim() === "") {
-        alert("⚠️ Mohon isi Tulisan di atas kue");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Tulisan di atas kue' });
         document.getElementById('co_tulisan').focus();
         return; 
     }
 
     if (!tanggal || tanggal.trim() === "") {
-        alert("⚠️ Mohon isi Tanggal Pengiriman terlebih dahulu!");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Tanggal Pengiriman terlebih dahulu!' });
         document.getElementById('co_tanggal').focus();
         return; // Menghentikan script ke Midtrans
     }
@@ -386,31 +404,37 @@ function prosesCustomOrderMidtrans() {
     // === SATPAM ANTI TANGGAL MASA LALU (MANUAL KETIK) ===
     const hariIni = new Date().toISOString().split('T')[0]; // Ambil tgl hari ini (YYYY-MM-DD)
     if (tanggal < hariIni) {
-        alert("⚠️ Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!");
+        Swal.fire({ icon: 'warning', text: 'Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!' });
         document.getElementById('co_tanggal').value = ""; // Kosongkan inputan yang salah
         document.getElementById('co_tanggal').focus();
         return; // Hentikan proses!
     }
 
     if (!metode || metode.trim() === "") {
-        alert("⚠️ Mohon isi Metode pengiriman anda");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Metode pengiriman anda' });
         document.getElementById('co_metode').focus();
         return; 
     }
 
     if (metode === "Dikirim" && (!alamat || alamat.trim() === "")) {
-        alert("⚠️ Mohon isi detail alamat pengiriman!");
+        Swal.fire({ icon: 'warning', text: 'Mohon isi detail alamat pengiriman!' });
         document.getElementById('co_alamat').focus();
         return; 
     }
 
     // === TAMBAHAN GERBANG KONFIRMASI ===
-    const konfirmasi = confirm("Mohon periksa kembali:\nApakah spesifikasi kue, alamat pengiriman, dan data diri Anda sudah sesuai?\n\nKlik 'OK' untuk memproses tagihan.");
-    
-    // Jika pembeli klik "Cancel/Batal", hentikan proses!
-    if (!konfirmasi) {
-        return; 
-    }
+    Swal.fire({
+        title: 'Konfirmasi Pesanan',
+        text: "Apakah spesifikasi kue, alamat pengiriman, dan data diri Anda sudah sesuai?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#a67c52',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Proses Tagihan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            showLoader();
     // 3. Tentukan Harga (Karena Midtrans WAJIB ada angka tagihan)
     // Kamu bisa ganti angka ini, atau ambil dari inputan harga jika ada
     let hargaCustomCake = 150000; 
@@ -450,18 +474,19 @@ function prosesCustomOrderMidtrans() {
     .then(data => {
         if (data.snap_token) {
             // Panggil Pop-up Midtrans
+            hideLoader();
             window.snap.pay(data.snap_token, {
                 onSuccess: function(result) {
-                    window.location.href = "/checkout/invoice/" + data.invoice;
+                    window.location.href = "/checkout/invoice/" + data.invoice + "?token=" + data.token;
                 },
                 onPending: function(result) {
-                    window.location.href = "/checkout/invoice/" + data.invoice; 
+                    window.location.href = "/checkout/invoice/" + data.invoice + "?token=" + data.token; 
                 },
                 onError: function(result) {
-                    alert("Pembayaran gagal diproses!");
+                    Swal.fire({ icon: 'warning', text: 'Pembayaran gagal diproses!' });
                 },
                 onClose: function() {
-                    alert('Kamu menutup halaman pembayaran sebelum menyelesaikan transaksi.'); 
+                    Swal.fire({ icon: 'warning', text: 'Kamu menutup halaman pembayaran sebelum menyelesaikan transaksi.' }); 
                 }
             });
         } else {
@@ -470,31 +495,88 @@ function prosesCustomOrderMidtrans() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert("Terjadi kesalahan sistem saat memproses custom order.");
+        hideLoader();
+        Swal.fire({ icon: 'warning', text: 'Terjadi kesalahan sistem saat memproses custom order.' });
+    });
+        }
     });
 }
 
 // Fungsi memasukkan roti ke struk
-function addToPosCart(id, nama, harga) {
-    let item = posCart.find(i => i.id == id);
-    if (item) {
-        item.qty += 1; // Jika sudah ada, tambah jumlahnya
-    } else {
-        posCart.push({ id: id, nama: nama, harga: Number(harga), qty: 1 }); 
+async function addToPosCart(id, nama, harga, stokAwal) {
+    try {
+        const response = await fetch('/api/check-stock/' + id);
+        const data = await response.json();
+        
+        if (!response.ok) {
+            Swal.fire({ icon: 'error', title: 'Error!', text: data.error || 'Terjadi kesalahan saat memeriksa stok.' });
+            return;
+        }
+
+        let stokAktual = data.stok;
+        
+        let stokDisplay = document.getElementById('stok-display-' + id);
+        if (stokDisplay) {
+            stokDisplay.innerText = 'Sisa: ' + stokAktual + ' pcs';
+        }
+
+        let item = posCart.find(i => i.id == id);
+        if (item) {
+            if (item.qty + 1 > stokAktual) {
+                Swal.fire({ icon: 'warning', title: 'Stok Habis!', text: `Tidak bisa menambah pesanan, sisa stok aktual: ${stokAktual} pcs.` });
+                return;
+            }
+            item.qty += 1;
+            item.stok = stokAktual; 
+        } else {
+            if (1 > stokAktual) {
+                Swal.fire({ icon: 'warning', title: 'Stok Kosong!', text: 'Produk ini baru saja habis dibeli orang lain.' });
+                return;
+            }
+            posCart.push({ id: id, nama: nama, harga: Number(harga), qty: 1, stok: stokAktual }); 
+        }
+        renderPosCart();
+    } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal menghubungi server untuk cek stok.' });
     }
-    renderPosCart();
 }
 
 // Fungsi tambah/kurang jumlah roti di struk
-function changePosQty(id, amount) {
+async function changePosQty(id, amount) {
     let item = posCart.find(i => i.id == id);
-    if (item) {
-        item.qty += amount;
-        // Hapus item dari struk jika qty mencapai 0
-        if (item.qty <= 0) {
-            posCart = posCart.filter(i => i.id != id);
+    if (!item) return;
+
+    if (amount > 0) {
+        try {
+            const response = await fetch('/api/check-stock/' + id);
+            const data = await response.json();
+            
+            if (response.ok) {
+                item.stok = data.stok;
+                let stokDisplay = document.getElementById('stok-display-' + id);
+                if (stokDisplay) {
+                    stokDisplay.innerText = 'Sisa: ' + item.stok + ' pcs';
+                }
+                
+                if (item.qty + amount > item.stok) {
+                    Swal.fire({ icon: 'warning', title: 'Batas Maksimal!', text: `Sisa stok aktual hanya ${item.stok} pcs.` });
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire({ icon: 'error', title: 'Koneksi Gagal', text: 'Gagal menghubungi server untuk cek stok.' });
+            return;
         }
     }
+
+    item.qty += amount;
+    // Hapus item dari struk jika qty mencapai 0
+    if (item.qty <= 0) {
+        posCart = posCart.filter(i => i.id != id);
+    }
+    
     renderPosCart();
 }
 
@@ -548,7 +630,7 @@ function renderPosCart() {
 let posGrandTotal = 0;
 
 function openModal() {
-    if (posCart.length === 0) return alert("Keranjang kosong!");
+    if (posCart.length === 0) return Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Keranjang belanja kosong!' });
     
     // Hitung total murni angka
     posGrandTotal = posCart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
@@ -620,7 +702,7 @@ function submitFinalPayment() {
     
     // Kalau bayar cash, uang tidak boleh kurang
     if (method === 'Cash' && paid < posGrandTotal) {
-        return alert("Nominal uang yang dibayarkan kurang dari total tagihan!");
+        return Swal.fire({ icon: 'warning', text: 'Nominal uang yang dibayarkan kurang dari total tagihan!' });
     }
 
     // Kalau bukan cash, anggap uang pas
@@ -637,6 +719,7 @@ function submitFinalPayment() {
     document.getElementById('input-change').value = change;
 
     // Submit form
+    showLoader();
     document.getElementById('form-pos').submit();
 }
 
@@ -646,7 +729,7 @@ function submitFinalPayment() {
 function payNow() {
     // 1. Cek apakah keranjang kosong menggunakan variabel global 'cart'
     if (cart.length === 0) {
-        return alert('Keranjang belanja kosong!');
+        return Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Keranjang belanja kosong!' });
     }
 
     // 2. Hitung total harga (perhatikan nama propertinya: price & quantity)
@@ -662,33 +745,33 @@ function payNow() {
 
     // PALANG PINTU VALIDASI CHECKOUT BIASA
     if (!namaPembeli || namaPembeli.trim() === "") {
-        alert('⚠️ Mohon isi Nama Anda!');
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Nama Anda!' });
         document.getElementById('nama').focus();
         return; // Menghentikan script
     }
 
     const regexHuruf = /^[A-Za-z\s]+$/;
     if (!regexHuruf.test(namaPembeli)) {
-        alert('⚠️ Nama hanya boleh berisi huruf dan spasi (tanpa angka/simbol)!');
+        Swal.fire({ icon: 'warning', text: 'Nama hanya boleh berisi huruf dan spasi (tanpa angka/simbol)!' });
         document.getElementById('nama').focus();
         return;
     }
 
     if (!emailPembeli || emailPembeli.trim() === "") {
-        alert('⚠️ Mohon isi Email Anda!');
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Email Anda!' });
         document.getElementById('email').focus();
         return;
     }
 
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexEmail.test(emailPembeli)) {
-        alert('⚠️ Format Email tidak valid! (Contoh: nama@email.com)');
+        Swal.fire({ icon: 'warning', text: 'Format Email tidak valid! (Contoh: nama@email.com)' });
         document.getElementById('email').focus();
         return;
     }
 
     if (!noHp || noHp.trim() === "") {
-        alert('⚠️ Mohon isi No HP Anda!');
+        Swal.fire({ icon: 'warning', text: 'Mohon isi No HP Anda!' });
         document.getElementById('nohp').focus();
         return;
     }
@@ -696,7 +779,7 @@ function payNow() {
     // CATATAN: Kalau di form checkout biasa ini kamu JUGA punya input tanggal pengiriman (misal id-nya 'tanggal_kirim'), tambahkan juga seperti ini:
     let tanggalKirim = document.getElementById('tanggal_kirim')?.value;
     if (!tanggalKirim || tanggalKirim.trim() === "") {
-         alert('⚠️ Mohon isi Tanggal Pengiriman!');
+         Swal.fire({ icon: 'warning', text: 'Mohon isi Tanggal Pengiriman!' });
          document.getElementById('tanggal_kirim').focus();
          return;
     }
@@ -704,29 +787,36 @@ function payNow() {
     // === SATPAM ANTI TANGGAL MASA LALU (MANUAL KETIK) ===
     const hariIniCheckout = new Date().toISOString().split('T')[0];
     if (tanggalKirim < hariIniCheckout) {
-        alert("⚠️ Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!");
+        Swal.fire({ icon: 'warning', text: 'Tanggal pengiriman tidak boleh berlalu (kurang dari hari ini)!' });
         document.getElementById('tanggal_kirim').value = ""; // Kosongkan
         document.getElementById('tanggal_kirim').focus();
         return; 
     }
 
     if (!alamat || alamat.trim() === "") {
-        alert('⚠️ Mohon isi Alamat Pengiriman!');
+        Swal.fire({ icon: 'warning', text: 'Mohon isi Alamat Pengiriman!' });
         document.getElementById('alamat').focus();
         return;
     }
 
     // === TAMBAHAN GERBANG KONFIRMASI ===
-    const konfirmasiCheckout = confirm("Mohon periksa kembali:\nApakah daftar belanjaan dan alamat pengiriman Anda sudah sesuai?\n\nKlik 'OK' untuk melanjutkan ke pembayaran.");
-    
-    if (!konfirmasiCheckout) {
-        return; // Hentikan script jika klik Cancel
-    }
+    Swal.fire({
+        title: 'Konfirmasi Checkout',
+        text: "Apakah daftar belanjaan dan alamat pengiriman Anda sudah sesuai?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#a67c52',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Bayar Sekarang!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            showLoader();
 
     // 4. Ambil CSRF Token dari tag <meta> di layout utama
     let csrfToken = document.querySelector('meta[name="csrf-token"]');
     if (!csrfToken) {
-        return alert("Error: Meta CSRF Token tidak ditemukan di layout!");
+        return Swal.fire({ icon: 'warning', text: 'Error: Meta CSRF Token tidak ditemukan di layout!' });
     }
 
     let catatan = document.getElementById('catatan')?.value || "-";
@@ -749,6 +839,7 @@ function payNow() {
     .then(data => {
         if (data.snap_token) {
             // Munculkan Pop-up Midtrans DULU (Jangan hapus keranjang di sini)
+            hideLoader();
             window.snap.pay(data.snap_token, {
                 onSuccess: function(result) {
                     // Hapus keranjang belanja karena sudah lunas
@@ -757,7 +848,7 @@ function payNow() {
                     updateCartUI(); 
 
                     // ALAHKAN KE HALAMAN SUKSES CODASHOP (Membawa data invoice dari backend)
-                    window.location.href = "/checkout/invoice/" + data.invoice;
+                    window.location.href = "/checkout/invoice/" + data.invoice + "?token=" + data.token;
                 },
                 onPending: function(result) {
                     localStorage.removeItem('alfazza_cart'); 
@@ -765,13 +856,13 @@ function payNow() {
                     updateCartUI();
 
                     // Alihkan juga ke halaman sukses tapi statusnya nanti pending
-                    window.location.href = "/checkout/invoice/" + data.invoice; 
+                    window.location.href = "/checkout/invoice/" + data.invoice + "?token=" + data.token; 
                 },
                 onError: function(result) {
-                    alert("Pembayaran gagal diproses!");
+                    Swal.fire({ icon: 'warning', text: 'Pembayaran gagal diproses!' });
                 },
                 onClose: function() {
-                    alert('Kamu menutup halaman pembayaran sebelum menyelesaikan transaksi.'); 
+                    Swal.fire({ icon: 'warning', text: 'Kamu menutup halaman pembayaran sebelum menyelesaikan transaksi.' }); 
                 }
             });
         } else {
@@ -780,6 +871,41 @@ function payNow() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert("Terjadi kesalahan sistem saat memproses pembayaran.");
+        hideLoader();
+        Swal.fire({ icon: 'warning', text: 'Terjadi kesalahan sistem saat memproses pembayaran.' });
     });
+        }
+    });
+}
+
+
+// ==========================================
+// 8. GLOBAL LOADING SCREEN
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    if (!document.getElementById('global-loader')) {
+        const loaderHTML = `
+            <div id="global-loader" class="fixed inset-0 bg-black/60 z-[9999] flex-col justify-center items-center hidden">
+                <i class="fa-solid fa-circle-notch animate-spin text-5xl text-primary-brown mb-4"></i>
+                <p class="text-white font-bold text-lg m-0 mt-4">Memproses data...</p>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', loaderHTML);
+    }
+});
+
+window.showLoader = function() {
+    const loader = document.getElementById('global-loader');
+    if(loader) {
+        loader.classList.remove('hidden');
+        loader.classList.add('flex');
+    }
+}
+
+window.hideLoader = function() {
+    const loader = document.getElementById('global-loader');
+    if(loader) {
+        loader.classList.remove('flex');
+        loader.classList.add('hidden');
+    }
 }

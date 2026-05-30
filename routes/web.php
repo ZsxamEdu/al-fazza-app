@@ -81,3 +81,12 @@ Route::post('/checkout/custom/process', [TransactionController::class, 'processC
 
 // Midtrans Webhook Callback
 Route::post('/midtrans/callback', [PaymentCallbackController::class, 'receive']);
+
+// RUTE API INTERNAL
+Route::get('/api/check-stock/{id}', function($id) {
+    $product = \App\Models\Product::find($id);
+    if (!$product) {
+        return response()->json(['error' => 'Produk tidak ditemukan'], 404);
+    }
+    return response()->json(['stok' => $product->stok]);
+});

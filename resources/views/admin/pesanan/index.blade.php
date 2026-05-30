@@ -15,6 +15,10 @@
         <form action="{{ route('admin.pesanan.index') }}" method="GET" class="flex gap-4 items-end flex-wrap text-sm lg:text-base">
             
             <div class="flex-1 min-w-40">
+                <label>Cari (Nama / Invoice):</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci..." class="border border-border-medium rounded w-full p-2">
+            </div>
+            <div class="flex-1 min-w-40">
                 <label>Filter Status:</label>
                 <select name="status" class="border border-border-medium rounded w-full p-2">
                     <option value="">Semua Status</option>
@@ -98,14 +102,20 @@
                             <!-- Tampilkan List Roti Biasa -->
                             <ul class="pl-5 m-0 text-sm">
                                 @foreach($p->details as $detail)
-                                    <li>{{ $detail->product->nama ?? 'Produk Dihapus' }} (x{{ $detail->qty }})</li>
+                                    <li>
+                                        {{ $detail->product->nama}} 
+                                        @if($detail->product && $detail->product->trashed())
+                                            <span class="text-xs text-red-500 font-normal italic ml-1">(Dihapus)</span>
+                                        @endif
+                                        (x{{ $detail->qty }})
+                                    </li>
                                 @endforeach
                             </ul>
                         @endif
                     </td>
 
                     <!-- Kolom 4: Badge Status -->
-                    <td class="align-top py-3 px-4 border-b border-border-light align-middle">
+                    <td class="py-3 px-4 border-b border-border-light align-middle">
                         @if($p->order_status == 'baru')
                             <span class="bg-red-500 text-white py-1 px-2 rounded text-xs">Pesanan Baru</span>
                         @elseif($p->order_status == 'diproses')
@@ -163,6 +173,7 @@ function confirmStatusChange(selectEl) {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
+            showLoader();
             selectEl.form.submit();
         } else {
             // Kembalikan ke nilai sebelumnya (sebelum user geser dropdown)

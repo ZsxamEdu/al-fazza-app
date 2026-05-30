@@ -20,7 +20,7 @@
 
                     <div class="flex-1 min-w-48 mb-4">
                         <label class="block mb-1.5 font-medium text-sm text-text-medium">No. WhatsApp *</label>
-                        <input type="text" id="co_nama" required placeholder="Contoh: Budi Santoso" class="form-input">
+                        <input type="text" id="co_nohp" required placeholder="Contoh: 083123456789" class="form-input">
                     </div>
 
                 </div>

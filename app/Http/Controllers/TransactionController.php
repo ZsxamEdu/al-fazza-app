@@ -48,13 +48,20 @@ class TransactionController extends Controller
 
         return response()->json([
             'snap_token' => $result['snap_token'],
-            'invoice' => $result['invoice']
+            'invoice' => $result['invoice'],
+            'token' => $result['token']
         ]);
     }
 
-    public function checkoutInvoice($invoice)
+    public function checkoutInvoice(Request $request, $invoice)
     {
-        $transaksi = Transaction::with('details.product')->where('invoice_number', $invoice)->firstOrFail();
+        $transaksi = Transaction::with(['details.product' => function ($q) {
+            $q->withTrashed();
+        }])->where('invoice_number', $invoice)->firstOrFail();
+        
+        if ($transaksi->token !== $request->query('token')) {
+            abort(403, 'Akses Ditolak: Token keamanan tidak valid atau tidak ditemukan.');
+        }
         
         $ui = [];
         if ($transaksi->payment_status == 'success') {
@@ -118,7 +125,8 @@ class TransactionController extends Controller
         return response()->json([
             'success' => true,
             'snap_token' => $result['snap_token'],
-            'invoice' => $result['invoice']
+            'invoice' => $result['invoice'],
+            'token' => $result['token']
         ]);
     }
 }

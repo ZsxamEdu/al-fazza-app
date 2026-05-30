@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('payment_method')->default('Cash');
             $table->integer('amount_paid')->nullable();
             $table->integer('change_amount')->nullable();
+            $table->string('token')->nullable();
             $table->timestamps(); // Berguna banget untuk Filter Laporan Harian!
         });
     }

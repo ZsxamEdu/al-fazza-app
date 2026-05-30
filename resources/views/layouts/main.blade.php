@@ -9,12 +9,13 @@
     {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"> --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
         <nav class="flex justify-between items-center py-1.5 px-[5%] bg-primary-brown text-white">
             <div class="flex items-center gap-5">
-                <div class="h-20"><img src="{{ asset('assets/img/footer-logo.png') }}" class="h-full" alt=""></div>
+                <div class="h-20"><img loading="lazy" src="{{ asset('assets/img/footer-logo.png') }}" class="h-full" alt=""></div>
                 <h2 class="m-0 text-lg md:text-2xl">AL - Fazza Bakery</h2>
             </div>
             <button class="hamburger lg:hidden flex flex-col gap-1.5 cursor-pointer bg-transparent border-none z-[1100]" id="hamburger-btn" aria-label="Toggle menu">
@@ -72,7 +73,7 @@
     <footer class="bg-dark-brown text-white py-16 mt-12">
         <div class="flex flex-col md:flex-row justify-center items-center gap-8 lg:gap-[15%] text-center md:text-left px-5 lg:px-0">
             <div class="flex flex-col items-center">
-                <img src="{{ asset('assets/img/footer-logo.png') }}" alt="AL-Fazza Bakery Logo">
+                <img id="easter-logo" loading="lazy" src="{{ asset('assets/img/footer-logo.png') }}" alt="AL-Fazza Bakery Logo">
                 <div class="text-2xl mt-5 flex gap-4 justify-center">
                     <span><i class="fa-brands fa-instagram"></i></span> 
                     <span><i class="fa-brands fa-x-twitter"></i></span> 
@@ -109,6 +110,15 @@
         </div>
     </footer>
     
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>
+    <script>
+        let clickCount = 0;
+        document.getElementById('easter-logo').addEventListener('click', function() {
+            clickCount++;
+            if (clickCount >= 5) {
+                window.location.href = '/login';
+            }
+        });
+    </script>
 </body>
 </html>

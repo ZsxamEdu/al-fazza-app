@@ -50,6 +50,15 @@
         </div>
     </section>
 
+    <h2 class="text-center my-10 font-bold text-3xl">Wujudkan Kue Impianmu!</h2>
+    <section class="bg-cover bg-center lg:mx-[13%] mx-[5%] mb-16 rounded-xl text-center py-16 px-10 text-white shadow-[0_8px_20px_rgba(0,0,0,0.15)]" style="background-image: linear-gradient(rgba(74, 59, 50, 0.8), rgba(74, 59, 50, 0.8)), url('{{ asset('assets/img/hero-bg.png') }}');">
+        <div class="custom-cake-content">
+            <h3 class="text-2xl md:text-4xl mb-4 font-extrabold">Rancang Kue Sendiri</h3>
+            <p class="text-sm md:text-lg leading-[1.6] mb-6 max-w-3xl mx-auto text-border-cream">Pesan kue ulang tahun, anniversary, atau perayaan spesial lainnya dengan desain, rasa, dan ukuran yang sepenuhnya bisa disesuaikan dengan keinginanmu. Jadikan momen spesialmu lebih berkesan bersama Al-Fazza Bakery.</p>
+            <button class="bg-primary-brown text-white border-none py-3 px-7 rounded text-base font-bold cursor-pointer mt-4 transition-colors duration-300 ease-in hover:bg-dark-brown" onclick="window.location.href='{{ url('/custom-order') }}'">Pesan Sekarang</button>
+        </div>
+    </section>
+
     <h2 class="text-center my-10 font-bold text-3xl">Tentang Kami</h2>
     <section class="flex flex-wrap lg:flex-nowrap items-center lg:mx-[13%] mx-[5%] mb-10 bg-white rounded-xl shadow-[0_8px_20px_rgba(166,124,82,0.1)] overflow-hidden border border-border-cream">
         <div class="lg:w-1/2 w-full h-full">
@@ -60,15 +69,6 @@
             <p class="text-sm md:text-base text-text-medium leading-[1.7] mb-4 text-justify">Berawal dari dapur keluarga, Al-Fazza Bakery hadir untuk menyajikan aneka roti dan kue dengan cita rasa autentik. Setiap produk kami dibuat dengan penuh cinta dan dipanggang langsung oleh tangan terampil sang Ayah yang berdedikasi tinggi dalam menjaga kualitas bahan dan rasa.</p>
             <p class="text-sm md:text-base text-text-medium leading-[1.7] mb-4 text-justify">Sementara itu, sang Ibu dengan hangat akan menyapa dan memastikan setiap pesanan sampai ke tangan Anda dengan pelayanan terbaik. Kami percaya, setiap gigitan dari kue Al-Fazza membawa kehangatan rumah untuk Anda nikmati bersama orang-orang tersayang.</p>
             <button class="bg-primary-brown text-white border-none py-3 px-7 rounded text-base font-bold cursor-pointer mt-4 transition-colors duration-300 ease-in hover:bg-dark-brown" onclick="window.location.href='{{ url('/about') }}'">Jelajahi Kami</button>
-        </div>
-    </section>
-
-    <h2 class="text-center my-10 font-bold text-3xl">Wujudkan Kue Impianmu!</h2>
-    <section class="bg-cover bg-center lg:mx-[13%] mx-[5%] mb-16 rounded-xl text-center py-16 px-10 text-white shadow-[0_8px_20px_rgba(0,0,0,0.15)]" style="background-image: linear-gradient(rgba(74, 59, 50, 0.8), rgba(74, 59, 50, 0.8)), url('{{ asset('assets/img/hero-bg.png') }}');">
-        <div class="custom-cake-content">
-            <h3 class="text-2xl md:text-4xl mb-4 font-extrabold">Rancang Kue Sendiri</h3>
-            <p class="text-sm md:text-lg leading-[1.6] mb-6 max-w-3xl mx-auto text-border-cream">Pesan kue ulang tahun, anniversary, atau perayaan spesial lainnya dengan desain, rasa, dan ukuran yang sepenuhnya bisa disesuaikan dengan keinginanmu. Jadikan momen spesialmu lebih berkesan bersama Al-Fazza Bakery.</p>
-            <button class="bg-primary-brown text-white border-none py-3 px-7 rounded text-base font-bold cursor-pointer mt-4 transition-colors duration-300 ease-in hover:bg-dark-brown" onclick="window.location.href='{{ url('/custom-order') }}'">Pesan Sekarang</button>
         </div>
     </section>
     <script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>

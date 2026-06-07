@@ -11,7 +11,9 @@ class OrderController extends Controller
 {
     public function pesananIndex(Request $request)
     {
-        $query = Transaction::with('details.product')
+        $query = Transaction::with(['details.product' => function ($q) {
+            $q->withTrashed();
+        }])
                             ->where('payment_status', 'success');
 
         if ($request->filled('status')) {
@@ -20,6 +22,14 @@ class OrderController extends Controller
 
         if ($request->filled('jenis')) {
             $query->where('order_type', $request->jenis);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('invoice_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%");
+            });
         }
 
         $pesanan = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();

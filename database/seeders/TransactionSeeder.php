@@ -32,6 +32,7 @@ class TransactionSeeder extends Seeder
                 'order_status' => 'selesai',
                 'custom_details' => null,
                 'snap_token' => null,
+                'token' => \Illuminate\Support\Str::random(32),
                 'created_at' => Carbon::now()->subDays(2),
                 'updated_at' => Carbon::now()->subDays(2),
             ],
@@ -50,6 +51,7 @@ class TransactionSeeder extends Seeder
                 'order_status' => 'dikirim',
                 'custom_details' => null,
                 'snap_token' => 'dummy_snap_token_123',
+                'token' => \Illuminate\Support\Str::random(32),
                 'created_at' => Carbon::now()->subDays(1),
                 'updated_at' => Carbon::now()->subDays(1),
             ],
@@ -68,6 +70,7 @@ class TransactionSeeder extends Seeder
                 'order_status' => 'diproses',
                 'custom_details' => 'Ukuran: 24 cm | Bentuk: Bulat | Rasa: Bolu Coklat | Isian: Selai Strawberry | Tema: Spiderman Merah Biru | Tulisan: "Happy Birthday Ke-5"',
                 'snap_token' => 'dummy_snap_token_custom',
+                'token' => \Illuminate\Support\Str::random(32),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]

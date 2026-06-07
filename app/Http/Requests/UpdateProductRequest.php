@@ -18,7 +18,6 @@ class UpdateProductRequest extends FormRequest
             'tipe' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
-            'stok' => 'required|numeric|min:0',
             'deskripsi' => 'required|string',
             'bahan' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 

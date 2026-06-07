@@ -51,26 +51,32 @@
             @endif
             <div class="mb-3.5">
                 <strong class="text-text-dark block mb-2.5">Detail Pesanan:</strong>
-                @foreach($transaksi->details as $detail)
-                    <div class="flex justify-between items-center border-b border-border-light pb-2.5 mb-2.5">
-                        <div>
-                            <span class="text-text-dark font-medium block">{{ $detail->product->nama }} (x{{ $detail->qty }})</span>
-                            <span class="text-text-light text-sm">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
-                        </div>
-                        @if($transaksi->order_status == 'selesai')
-                            @php
-                                $hasReviewed = \App\Models\Review::where('transaction_id', $transaksi->id)
-                                    ->where('product_id', $detail->product_id)
-                                    ->exists();
-                            @endphp
-                            @if($hasReviewed)
-                                <span class="bg-success-bg text-text-success py-1 px-2.5 rounded-3xl text-xs font-bold"><i class="fa-solid fa-check"></i> Telah Dinilai</span>
-                            @else
-                                <a href="{{ route('review.create', ['invoice' => $transaksi->invoice_number, 'product_id' => $detail->product_id]) }}" class="bg-primary-brown text-white py-1 px-2.5 rounded-3xl text-xs font-bold no-underline inline-block"><i class="fa-solid fa-star"></i> Beri Penilaian</a>
-                            @endif
-                        @endif
+                @if($transaksi->order_type == 'custom-order')
+                    <div class="text-sm text-text-dark bg-gray-50 p-4 rounded-lg border border-border-light leading-relaxed">
+                        {!! str_replace(' | ', '<br>', e($transaksi->custom_details)) !!}
                     </div>
-                @endforeach
+                @else
+                    @foreach($transaksi->details as $detail)
+                        <div class="flex justify-between items-center border-b border-border-light pb-2.5 mb-2.5">
+                            <div>
+                                <span class="text-text-dark font-medium block">{{ $detail->product->nama }} (x{{ $detail->qty }})</span>
+                                <span class="text-text-light text-sm">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+                            </div>
+                            @if($transaksi->order_status == 'selesai')
+                                @php
+                                    $hasReviewed = \App\Models\Review::where('transaction_id', $transaksi->id)
+                                        ->where('product_id', $detail->product_id)
+                                        ->exists();
+                                @endphp
+                                @if($hasReviewed)
+                                    <span class="bg-success-bg text-text-success py-1 px-2.5 rounded-3xl text-xs font-bold"><i class="fa-solid fa-check"></i> Telah Dinilai</span>
+                                @else
+                                    <a href="{{ route('review.create', ['invoice' => $transaksi->invoice_number, 'product_id' => $detail->product_id]) }}" class="bg-primary-brown text-white py-1 px-2.5 rounded-3xl text-xs font-bold no-underline inline-block"><i class="fa-solid fa-star"></i> Beri Penilaian</a>
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
+                @endif
             </div>
 
             <div class="flex justify-between mt-4 text-lg">
@@ -107,7 +113,7 @@
                     location.reload();
                 },
                 onError: function(result) {
-                    alert("Pembayaran gagal diproses!");
+                    Swal.fire({ icon: 'error', title: 'Oops...', text: 'Pembayaran gagal diproses!' });
                 },
                 onClose: function() {
                     console.log('User menutup popup.');

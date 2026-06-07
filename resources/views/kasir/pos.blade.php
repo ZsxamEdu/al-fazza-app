@@ -7,6 +7,7 @@
     <title>Mesin Kasir - Al-Fazza Bakery</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logo.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-bg-gray flex flex-col h-screen overflow-hidden">
 
@@ -32,12 +33,12 @@
             
             <div class="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
                 @foreach($products as $p)
-                <div class="bg-white rounded-lg overflow-hidden shadow-[0_2px_5px_rgba(0,0,0,0.05)] cursor-pointer border-2 border-transparent transition duration-200 hover:border-primary-brown hover:-translate-y-0.5" onclick="addToPosCart('{{ $p->id }}', '{{ $p->nama }}', '{{ $p->harga }}')">
-                    <img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-full h-30 object-cover">
+                <div class="pos-card bg-white rounded-lg overflow-hidden shadow-[0_2px_5px_rgba(0,0,0,0.05)] cursor-pointer border-2 border-transparent transition duration-200 hover:border-primary-brown hover:-translate-y-0.5" onclick="addToPosCart('{{ $p->id }}', '{{ $p->nama }}', '{{ $p->harga }}', {{ $p->stok }})">
+                    <img loading="lazy" src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-full h-30 object-cover">
                     <div class="p-3 text-center">
-                        <div class="font-bold text-[0.95rem] text-text-dark mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis">{{ $p->nama }}</div>
+                        <div class="pos-card-title font-bold text-[0.95rem] text-text-dark mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis">{{ $p->nama }}</div>
                         <div class="text-primary-brown font-bold">Rp {{ number_format($p->harga, 0, ',', '.') }}</div>
-                        <div class="text-[0.8rem] text-text-light mt-1">Sisa: {{ $p->stok }} pcs</div>
+                        <div class="text-[0.8rem] text-text-light mt-1" id="stok-display-{{ $p->id }}">Sisa: {{ $p->stok }} pcs</div>
                     </div>
                 </div>
                 @endforeach
@@ -159,7 +160,7 @@
             </form>
         </div>
     </div>
-    <script src="{{ asset('assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const fabCart = document.getElementById('fab-cart');

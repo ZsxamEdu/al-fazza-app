@@ -42,13 +42,13 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2" class="mb-5">
+            <div class="flex flex-col gap-2 mb-5">
                 <label>Keterangan (Opsional)</label>
                 <textarea name="keterangan" class="form-input" placeholder="Contoh: Roti baru matang dari oven shift pagi..." class="min-h-20">{{ old('keterangan') }}</textarea>
                 @error('keterangan') <span class="text-danger text-sm mt-1">{{ $message }}</span> @enderror
             </div>
 
-            <div class="text-right">
+            <div class="text-right mt-5">
                 <a href="{{ route('admin.stok.index') }}" class="bg-gray-400 text-white py-3 px-6 rounded-md font-bold hover:bg-gray-500 transition mr-2.5 inline-block no-underline">Batal</a>
                 <button type="submit" class="bg-primary-brown text-white py-3 px-6 rounded-md font-bold hover:bg-dark-brown transition cursor-pointer border-none text-base"><i class="fa-solid fa-save"></i> Simpan Catatan Stok</button>
             </div>

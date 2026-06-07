@@ -55,7 +55,6 @@ class ProductService
             'tipe' => $data['tipe'],
             'kategori' => $data['kategori'],
             'harga' => $data['harga'],
-            'stok' => $data['stok'],
             'deskripsi' => $data['deskripsi'],
             'bahan' => $data['bahan'],
             'gambar' => $gambarPath,
@@ -66,10 +65,8 @@ class ProductService
 
     public function deleteProduct(Product $product)
     {
-        if (File::exists(public_path($product->gambar))) {
-            File::delete(public_path($product->gambar));
-        }
-
+        // Karena menggunakan SoftDeletes, file gambar fisik tidak dihapus
+        // agar foto produk di riwayat invoice lama (pelanggan) tidak rusak.
         $product->delete();
     }
 }

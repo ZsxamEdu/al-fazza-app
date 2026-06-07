@@ -11,7 +11,7 @@
             </div>
             <div class="flex-1 w-full">
                 <div class="rounded-xl overflow-hidden shadow-[0_8px_20px_rgba(166,124,82,0.15)] border-4 border-border-cream">
-                    <img src="{{ asset('assets/img/tempat.png') }}" alt="Dapur Al-Fazza" class="w-full h-auto block">
+                    <img loading="lazy" src="{{ asset('assets/img/tempat.png') }}" alt="Dapur Al-Fazza" class="w-full h-auto block">
                 </div>
             </div>
         </div>
@@ -19,7 +19,7 @@
         <div class="flex flex-col md:flex-row items-center gap-10 mb-16">
             <div class="flex-1 w-full">
                 <div class="rounded-xl overflow-hidden shadow-[0_8px_20px_rgba(166,124,82,0.15)] border-4 border-border-cream">
-                    <img src="{{ asset('assets/img/pisangbolen 1.png') }}" alt="Produk Al-Fazza" class="w-full h-auto block">
+                    <img loading="lazy" src="{{ asset('assets/img/pisangbolen 1.png') }}" alt="Produk Al-Fazza" class="w-full h-auto block">
                 </div>
             </div>
             <div class="flex-1">

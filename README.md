@@ -1,59 +1,42 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Al-Fazza App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Proyek ini adalah aplikasi web yang dibangun menggunakan **Laravel 12** sebagai pemenuhan tugas Ujian Akhir Semester (UAS) mata kuliah Pemrograman Web. Aplikasi ini dilengkapi dengan integrasi payment gateway Midtrans dan fitur pembuatan laporan/dokumen PDF menggunakan DOMPDF.
 
-## About Laravel
+## 1. Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Katalog & Pemesanan Online**: Pengunjung dapat melihat daftar produk, melakukan pesanan biasa (checkout), atau membuat pesanan kustom (custom order).
+- **Pembayaran Otomatis**: Integrasi payment gateway (Midtrans) untuk memproses pembayaran secara online.
+- **Sistem Kasir (POS)**: Modul khusus untuk kasir memproses transaksi langsung di tempat, termasuk fitur penyelesaian pesanan dan cetak struk.
+- **Manajemen Toko (Admin)**: Panel admin untuk mengelola katalog produk, melacak pergerakan stok barang, serta memantau dan mengubah status pesanan pelanggan.
+- **Laporan Transaksi**: Fitur rekapitulasi data dan ekspor laporan penjualan ke dalam format PDF dan Excel.
+- **Ulasan Produk**: Fitur bagi pelanggan untuk memberikan ulasan (review) pada produk setelah menyelesaikan transaksi.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 2. Persyaratan Sistem
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Sebelum menjalankan proyek ini, pastikan sistem Anda memiliki spesifikasi berikut:
+- PHP >= 8.2
+- Composer
+- Node.js & npm (untuk proses build aset dengan Vite)
+- Database (MySQL/SQLite/PostgreSQL)
 
-## Learning Laravel
+## 3. Struktur Direktori
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Berikut adalah struktur utama direktori dalam proyek ini:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```text
+al-fazza-app/
+├── app/               # Berisi core code dari aplikasi (Models, Controllers, Middleware)
+├── bootstrap/         # File untuk proses bootstrapping aplikasi Laravel
+├── config/            # Semua file konfigurasi proyek
+├── database/          # File migrasi, seeder, dan factory database
+├── public/            # Entry point aplikasi (index.php) dan aset publik (gambar, css/js hasil build)
+├── resources/         # View (Blade templates) dan raw assets (CSS/JS sebelum di-build)
+├── routes/            # Definisi rute aplikasi (web.php, api.php, dll)
+├── storage/           # Penyimpanan file yang di-generate, log, dan cache
+├── tests/             # File untuk automated testing (PHPUnit/Pest)
+└── vendor/            # Dependensi library PHP (hasil dari composer install)
+```
 
-## Laravel Sponsors
+## 4. Lisensi
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi ini dibangun di atas kerangka kerja Laravel yang dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).

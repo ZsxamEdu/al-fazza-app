@@ -18,9 +18,23 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function produkIndex()
+    public function produkIndex(Request $request)
     {
-        $products = Product::orderBy('id', 'desc')->paginate(10);
+        $query = Product::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        if ($request->has('stok_menipis') && $request->stok_menipis == '1') {
+            $query->where('stok', '<', 10);
+        }
+
+        $products = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
         return view('admin.produk.index', compact('products'));
     }
 

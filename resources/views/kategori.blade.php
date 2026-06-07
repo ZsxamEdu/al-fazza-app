@@ -27,7 +27,7 @@
                     </div>
                     <div class="relative w-full mb-2 md:mb-4 flex-1">
                         <div class="absolute top-1 left-3 md:top-2.5 md:left-10 bg-white/95 py-0.5 px-1.5 md:py-1.5 md:px-2.5 rounded text-xs md:text-sm font-extrabold text-text-dark flex items-center gap-1 shadow-[0_2px_5px_rgba(0,0,0,0.1)] z-10"><i class="fa-solid fa-star text-star"></i>{{ $p->rating }}</div>
-                        <img src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-full h-28 md:h-48 rounded px-2 md:px-8 object-cover block mt-2">
+                        <img loading="lazy" src="{{ asset($p->gambar) }}" alt="{{ $p->nama }}" class="w-full h-28 md:h-48 rounded px-2 md:px-8 object-cover block mt-2">
                     </div>
                     <div class="flex flex-col justify-between items-start px-3 md:px-8 pb-3 md:pb-5 mt-auto gap-2">
                         <p class="text-sm md:text-xl font-bold mb-0">Rp {{ number_format($p->harga, 0, ',', '.') }}</p>

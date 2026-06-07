@@ -25,7 +25,7 @@
             <div class="text-2xl lg:text-3xl font-bold text-danger">{{ $stokMenipis->count() }}</div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-warning">
-            <h3 class="text-lg lg:text-xl font-bold m-0 mb-2">Pesanan Pending</h3>
+            <h3 class="text-lg lg:text-xl font-bold m-0 mb-2">Pesanan Baru (Siap Diproses)</h3>
             <div class="text-xl lg:text-3xl font-bold text-warning">{{ $pesananBaru }}</div>
         </div>
         <div class="bg-white p-5 rounded-lg shadow-sm flex-1 border-l-[5px] border-l-success">

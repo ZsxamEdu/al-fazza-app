@@ -8,6 +8,7 @@
     {{-- <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"> --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @stack('scripts')
 </head>
@@ -17,7 +18,7 @@
     <!-- Sidebar -->
     <div id="admin-sidebar" class="w-64 bg-dark-brown text-white p-5 flex flex-col shrink-0 fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 transition duration-200 ease-in-out z-50">
         <div class="text-center pt-2.5">
-            <img src="{{ asset('assets/img/footer-logo.png') }}" alt="Al-Fazza Bakery" class="mx-auto max-w-full h-32 mb-2.5">
+            <img loading="lazy" src="{{ asset('assets/img/footer-logo.png') }}" alt="Al-Fazza Bakery" class="mx-auto max-w-full h-32 mb-2.5">
         </div>
         <h2 class="text-center mt-4 mb-6 tracking-[0.5px] border-b border-white/10 pb-4 text-2xl">Admin Panel</h2>
         
@@ -63,7 +64,7 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/js/script.js') }}"></script>
+<script src="{{ asset('assets/js/script.js') }}?v={{ time() }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const btn = document.getElementById('mobile-menu-btn');

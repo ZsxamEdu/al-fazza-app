@@ -4,7 +4,7 @@
     <main class="max-w-6xl my-10 mx-auto px-5 font-sans">
         <section class="flex flex-col lg:flex-row gap-12 items-stretch lg:items-start mb-16">
             <div class="flex-1 bg-bg-gray-light rounded-xl flex justify-center items-center overflow-hidden w-full">
-                <img id="product-img" src="{{ asset($kue->gambar) }}" alt="{{ $kue->nama }}" class="w-full max-h-125 object-cover rounded-xl">
+                <img loading="lazy" id="product-img" src="{{ asset($kue->gambar) }}" alt="{{ $kue->nama }}" class="w-full max-h-125 object-cover rounded-xl">
             </div>
 
             <div class="flex-1 w-full">
@@ -132,7 +132,7 @@
                         </div>
                         <div class="relative w-full mb-2 md:mb-4 flex-1">
                             <div class="absolute top-3 left-3 md:left-9 bg-white/95 py-0.5 px-1.5 md:py-1.5 md:px-2.5 rounded text-xs md:text-sm font-extrabold text-text-dark flex items-center gap-1 shadow-[0_2px_5px_rgba(0,0,0,0.1)] z-10"><i class="fa-solid fa-star text-star"></i>{{ $item->rating }}</div>
-                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-32 md:h-48 rounded px-2 md:px-8 object-cover block mt-2">
+                            <img loading="lazy" src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-32 md:h-48 rounded px-2 md:px-8 object-cover block mt-2">
                         </div>
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-3 md:px-8 pb-3 md:pb-5 mt-auto gap-2">
                             <p class="text-sm md:text-xl font-bold mb-0">Rp {{ number_format($item->harga, 0, ',', '.') }}</p>

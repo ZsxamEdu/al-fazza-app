@@ -76,13 +76,13 @@
 
 @layer components {
     .btn-primary {
-        @apply bg-primary-brown text-white border-none rounded-lg-lg cursor-pointer transition-colors duration-300 hover:opacity-90 inline-flex items-center justify-center;
+        @apply bg-primary-brown text-white border-none rounded-lg cursor-pointer transition-colors duration-300 hover:opacity-90 inline-flex items-center justify-center;
     }
     .btn-secondary {
-        @apply bg-secondary text-white border-none rounded-lg-lg cursor-pointer transition-colors duration-300 hover:opacity-90 inline-flex items-center justify-center;
+        @apply bg-secondary text-white border-none rounded-lg cursor-pointer transition-colors duration-300 hover:opacity-90 inline-flex items-center justify-center;
     }
     .form-input {
-        @apply w-full p-2.5 border border-border-medium rounded-lg-lg outline-none focus:border-primary-brown;
+        @apply w-full p-2.5 border border-border-medium rounded-lg outline-none focus:border-primary-brown;
     }
     .badge {
         @apply py-0.5 px-2 rounded-lg text-[0.8rem] font-bold inline-block;
@@ -94,9 +94,14 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Fix SweetAlert z-index overlapping with cart sidebar */
+/* Fix SweetAlert z-index overlapping with cart sidebar and add blur */
 .swal2-container {
     z-index: 9999 !important;
+}
+.swal2-container.swal2-backdrop-show {
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Custom SweetAlert Styling for Figma Design */

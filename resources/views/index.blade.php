@@ -1,24 +1,65 @@
 @extends('layouts.main')
 
 @section('content')
-    <section class="py-12 px-5 md:px-[15%] flex justify-center">
-        <div class="bg-[#FFF5F5] rounded-[30px] border border-[#F0E6DD] shadow-[0_8px_20px_rgba(0,0,0,0.05)] p-8 md:p-12 w-full flex flex-col items-center text-center">
-            <div class="w-full max-w-sm mb-6">
-                <img loading="lazy" src="{{ asset('assets/img/pisangbolen 1.png') }}" alt="Pisang Bolen" class="w-full h-auto drop-shadow-md">
+    <!-- HERO SECTION DENGAN MASKOT -->
+    <section class="bg-primary-brown pt-12 pb-16 px-5 md:px-12 lg:px-24 rounded-b-[30px] md:rounded-b-[50px] relative overflow-hidden mb-16 shadow-lg border-b-4 border-dark-brown/20">
+        <!-- Dekorasi Background -->
+        <!-- <div class="absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-48 h-48 bg-dark-brown/15 rounded-full blur-2xl pointer-events-none"></div> -->
+        
+        <div class="flex flex-col lg:flex-row items-center justify-between max-w-6xl mx-auto gap-8 lg:gap-4 relative z-10">
+            <!-- Left Side: Mascot -->
+            <div class="w-full lg:w-1/2 flex justify-center lg:justify-start">
+                <!-- User harus memastikan assets/img/mascot.png ada -->
+                <img loading="lazy" src="{{ asset('assets/img/mascot.png') }}" alt="Chef Mascot" class="w-[70%] sm:w-[60%] lg:w-[85%] max-w-sm drop-shadow-[0_15px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-500 ease-out">
             </div>
-            <h1 class="text-3xl md:text-4xl lg:text-5xl mb-4 font-extrabold text-black tracking-wide">Pisang Bolen</h1>
-            <p class="font-medium text-text-medium md:text-lg max-w-2xl text-sm leading-relaxed">Perpaduan pisang dan cokelat lumer atau keju gurih yang dibalut kulit pastry berlapis yang renyah di luar namun lembut di dalam.</p>
+            
+            <!-- Right Side: Text & CTA -->
+            <div class="w-full lg:w-1/2 text-center lg:text-right text-white">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-5 leading-tight tracking-tight drop-shadow-md">Hallo!<br>Ayo Mulai</h1>
+                <p class="text-sm md:text-lg lg:text-xl font-medium text-white/95 mb-8 max-w-lg mx-auto lg:mx-0 lg:ml-auto leading-relaxed drop-shadow-sm">
+                    Jelajahi kelezatan aneka roti, kue, dan pastry autentik buatan tangan yang disajikan segar setiap hari.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-end gap-3 md:gap-4">
+                    <button class="bg-white text-primary-brown py-3.5 px-8 rounded-xl font-extrabold text-base md:text-lg shadow-[0_5px_15px_rgba(0,0,0,0.15)] hover:bg-bg-cream hover:-translate-y-1 transition-all duration-300" onclick="window.location.href='#terlaris'">Lihat Produk</button>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="bg-[#A58B76] text-center p-8 pb-12 text-white">
-        <h2 class="text-2xl md:text-3xl font-extrabold mb-6 mt-0 text-white flex justify-center items-center gap-2">
-            <i class="fas fa-star text-yellow-400"></i> Terlaris
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 justify-center gap-4 md:gap-6 mx-auto max-w-5xl">
+    <!-- TERLARIS SECTION (GRID BARU) -->
+    <section id="terlaris" class="max-w-6xl mx-auto px-5 lg:px-0 mb-16">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-black inline-flex items-center gap-3">
+                <i class="fas fa-crown text-yellow-500 text-2xl md:text-3xl"></i> Paling Laris
+            </h2>
+            <p class="text-text-medium mt-3 text-sm md:text-base">Produk favorit pilihan pelanggan Al-Fazza Bakery.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             @foreach($terlaris as $item)
-            <div class="bg-white rounded-xl p-2.5 cursor-pointer transition-transform duration-300 ease-in hover:scale-105 flex items-center justify-center aspect-square" onclick="window.location.href='{{ url('/detail/') }}/{{ $item->id }}'">
-                <img loading="lazy" src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-full object-contain rounded-lg">
+            <div class="bg-white border border-border-cream rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-[0_8px_25px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 flex flex-col h-full group" onclick="window.location.href='{{ url('/detail/') }}/{{ $item->id }}'">
+                <!-- Image Container with Badge -->
+                <div class="relative w-full aspect-square bg-[#FBF8F5] overflow-hidden p-5 flex items-center justify-center border-b border-border-cream/50">
+                    <img loading="lazy" src="{{ asset($item->gambar) }}" alt="{{ $item->nama }}" class="w-full h-full object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-500">
+                    
+                    <!-- Badge Terjual -->
+                    <div class="absolute top-3 left-3 bg-danger text-white text-xs md:text-sm font-bold py-1 px-2.5 rounded-full shadow-md flex items-center gap-1.5 z-10">
+                        <i class="fas fa-fire"></i> {{ $item->total_terjual ?? 0 }} Terjual
+                    </div>
+                </div>
+                
+                <!-- Card Content -->
+                <div class="p-4 md:p-5 flex-1 flex flex-col">
+                    <h3 class="text-base md:text-lg font-extrabold text-text-darker mb-1 truncate">{{ $item->nama }}</h3>
+                    <span class="text-xs md:text-sm text-text-light mb-4 block font-medium">{{ ucfirst($item->kategori) }}</span>
+                    <div class="mt-auto flex justify-between items-center">
+                        <span class="font-black text-primary-brown text-sm md:text-lg">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                        <div class="w-8 h-8 md:w-10 md:h-10 bg-primary-brown rounded-full flex items-center justify-center text-white transition-colors shadow-sm group-hover:bg-dark-brown group-hover:scale-110">
+                            <i class="fas fa-chevron-right text-xs md:text-sm"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             @endforeach
         </div>
@@ -82,26 +123,12 @@
         document.addEventListener("DOMContentLoaded", function() {
             if (!sessionStorage.getItem('welcome_shown')) {
                 Swal.fire({
-                    html: `
-                        <div class="flex flex-col items-center justify-center p-1 md:p-3">
-                            <div class="bg-[#F8EEE4] rounded-full p-2 mb-6 shadow-sm w-28 h-28 flex items-center justify-center border-4 border-white">
-                                <img src="{{ asset('assets/img/footer-logo.png') }}" alt="Logo" class="w-20 h-20 object-contain drop-shadow-md">
-                            </div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-[#4A3B32] mb-5 tracking-tight">Selamat Datang di Al-Fazza</h2>
-                            <p class="text-[15px] md:text-lg text-[#5A4B42] mb-8 font-medium">
-                                <span class="underline decoration-1 underline-offset-4">Yuk, Tekan lanjutkan untuk melihat</span><br>
-                                <span class="underline decoration-1 underline-offset-4">etalase produk kami</span>
-                            </p>
-                        </div>
-                    `,
+                    icon: 'info',
+                    iconHtml: `<img src="{{ asset('assets/img/footer-logo.png') }}" style="width: 50px; height: 50px; object-fit: contain;">`,
+                    title: 'Selamat Datang di Al-Fazza',
+                    html: '<span>Yuk, Tekan lanjutkan untuk melihat</span><br><span>etalase produk kami</span>',
                     showConfirmButton: true,
                     confirmButtonText: 'Lanjutkan',
-                    background: '#F0E7DE',
-                    customClass: {
-                        popup: 'rounded-[30px] shadow-2xl border border-[#E8DED3]',
-                        confirmButton: 'bg-[#A68469] text-white px-8 py-3.5 rounded-xl text-base md:text-lg font-semibold w-[85%] md:w-[70%] mx-auto block mb-2 shadow-md hover:bg-[#8F7057] transition-all',
-                    },
-                    buttonsStyling: false,
                     allowOutsideClick: false
                 });
                 sessionStorage.setItem('welcome_shown', 'true');

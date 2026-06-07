@@ -1,49 +1,128 @@
-# Al-Fazza App
+# Al-Fazza Bakery - Web Ordering Platform & Admin Management 🥐 🍰
 
-Proyek ini adalah aplikasi web yang dibangun menggunakan **Laravel 12** sebagai pemenuhan tugas Ujian Akhir Semester (UAS) mata kuliah Pemrograman Web. Aplikasi ini dilengkapi dengan integrasi payment gateway Midtrans dan fitur pembuatan laporan/dokumen PDF menggunakan DOMPDF.
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white) ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) ![Midtrans](https://img.shields.io/badge/Midtrans_Payment_Gateway-001A36?style=for-the-badge)
 
-## 1. Fitur Utama
+Repositori ini berisi *source code* untuk proyek Ujian Akhir Semester (UAS) mata kuliah Pemrograman Web (Semester 4), Program Studi Rekayasa Perangkat Lunak (Software Engineering), Universitas Pendidikan Indonesia (UPI) Kampus Cibiru.
 
-- **Katalog & Pemesanan Online**: Pengunjung dapat melihat daftar produk, melakukan pesanan biasa (checkout), atau membuat pesanan kustom (custom order).
-- **Pembayaran Otomatis**: Integrasi payment gateway (Midtrans) untuk memproses pembayaran secara online.
-- **Sistem Kasir (POS)**: Modul khusus untuk kasir memproses transaksi langsung di tempat, termasuk fitur penyelesaian pesanan dan cetak struk.
-- **Manajemen Toko (Admin)**: Panel admin untuk mengelola katalog produk, melacak pergerakan stok barang, serta memantau dan mengubah status pesanan pelanggan.
-- **Laporan Transaksi**: Fitur rekapitulasi data dan ekspor laporan penjualan ke dalam format PDF dan Excel.
-- **Ulasan Produk**: Fitur bagi pelanggan untuk memberikan ulasan (review) pada produk setelah menyelesaikan transaksi.
+Proyek ini adalah platform pemesanan *end-to-end* untuk **Al-Fazza Bakery**, sebuah toko roti dan kue modern. Terdiri dari halaman *Customer-facing* yang sangat interaktif dan responsif, serta *Content Management System* (Dashboard Admin) yang komprehensif untuk mengelola operasional bisnis mulai dari penjualan hingga pesanan kustom.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Fitur Utama
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Customer Facing Web:
+- **Responsive UI/UX & Animations:** Desain antarmuka premium, responsif, dan interaktif menggunakan **Tailwind CSS** dipadukan dengan Native CSS Animations untuk pengalaman pengguna yang maksimal.
+- **Sistem Templating Blade:** Komponen UI yang modular dan *reusable* (Hero, Produk Terlaris, Kategori, dll).
+- **Integrasi Payment Gateway (Midtrans):** Fitur *checkout* untuk pembelian produk secara aman dan *seamless*. Terintegrasi langsung dengan API Midtrans (Mode Sandbox) yang mendukung berbagai metode pembayaran instan seperti QRIS, E-Wallet (GoPay, ShopeePay), dan Virtual Account Bank.
+- **Dynamic Shopping Cart:** Sistem keranjang belanja dinamis berbasis Session yang menghitung total secara otomatis tanpa perlu *reload* halaman.
+- **Custom Cake Ordering:** Fitur unggulan bagi pelanggan untuk merancang dan memesan kue ulang tahun/spesial sesuai spesifikasi dan keinginan (Bentuk, Rasa, Isian, Tema, dll).
 
-## Laravel Sponsors
+### Admin Dashboard (CMS):
+- **Manajemen Pesanan (*Order Management*):** 
+  - Pesanan Online (via Midtrans)
+  - Pesanan Kasir / POS (Point of Sales)
+  - Pesanan Custom (Pesanan Kue Kustom)
+- **Manajemen Produk:** Fitur CRUD terintegrasi untuk menambah, mengedit, menghapus, dan mengatur stok roti, kue, pastry, dan cookies.
+- **Laporan Penjualan Terintegrasi:** Dasbor analitik untuk melihat ringkasan pendapatan, performa penjualan, dan mengekspor laporan dalam jangka waktu tertentu.
+- **Manajemen Pengguna:** Pengelolaan data pelanggan dan akses Admin.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 💻 Panduan Instalasi (Local Development)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi Al-Fazza Bakery di komputer/laptop Anda (Localhost):
 
-## Contributing
+### Prasyarat (Requirements)
+Pastikan Anda sudah menginstal aplikasi berikut di komputer Anda:
+- [XAMPP](https://www.apachefriends.org/) (termasuk PHP >= 8.1 dan MySQL)
+- [Composer](https://getcomposer.org/)
+- [Node.js & NPM](https://nodejs.org/) (untuk Vite & Tailwind CSS)
+- [Git](https://git-scm.com/)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Langkah-langkah Instalasi
 
-## Code of Conduct
+1. **Clone Repositori**
+   Buka terminal/CMD dan jalankan perintah:
+   ```bash
+   git clone https://github.com/Zsxam/al-fazza-uas.git
+   cd al-fazza-uas
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. **Install Dependensi PHP & NPM**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Security Vulnerabilities
+3. **Kompilasi Asset (Tailwind CSS & Vite)**
+   ```bash
+   npm run build
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. **Konfigurasi Environment File (.env)**
+   Gandakan (copy) file `.env.example` dan ubah namanya menjadi `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   Buka file `.env` dan atur koneksi *database* ke MySQL lokal Anda:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=alfazza_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+   *(Pastikan Anda telah membuat database kosong bernama `alfazza_db` di phpMyAdmin)*
 
-## License
+5. **Konfigurasi API Keys & Email Server (Penting!)**
+   Di dalam file `.env`, pastikan Anda memasukkan *Client Key* dan *Server Key* Midtrans Sandbox Anda, beserta konfigurasi SMTP Email (contoh menggunakan Gmail) untuk pengiriman tagihan:
+   ```env
+   # MIDTRANS CONFIG
+   MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxx
+   MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxx
+   MIDTRANS_IS_PRODUCTION=false
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   # MAIL CONFIG (Untuk kirim tagihan ke pelanggan)
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=465
+   MAIL_USERNAME=email_anda@gmail.com
+   MAIL_PASSWORD=password_app_gmail_anda
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS=email_anda@gmail.com
+   MAIL_FROM_NAME="Al-Fazza Bakery"
+   ```
+
+6. **Generate Application Key**
+   ```bash
+   php artisan key:generate
+   ```
+
+7. **Jalankan Migrasi & Seeder Database**
+   Perintah ini akan membuat semua tabel dan mengisi data awal (seperti produk, admin, dan transaksi *dummy*):
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+8. **Jalankan Server Lokal**
+   Buka 2 terminal secara bersamaan.
+   Di terminal pertama, jalankan server PHP:
+   ```bash
+   php artisan serve
+   ```
+   *(Opsional)* Di terminal kedua, jalankan server Vite untuk auto-refresh CSS saat development:
+   ```bash
+   npm run dev
+   ```
+   
+Aplikasi sekarang dapat diakses melalui browser di alamat: `http://127.0.0.1:8000`
+
+---
+
+## 👤 Kredensial Akses
+
+Untuk masuk ke **Dashboard Admin**, Anda bisa cari mandiri di *Seeder*
+
+---
+*Dibuat dengan ❤️ untuk Ujian Akhir Semester Pemrograman Web UPI.*

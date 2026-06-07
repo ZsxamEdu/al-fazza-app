@@ -3,21 +3,24 @@
 @section('content')
     <main class="max-w-6xl my-8 mx-auto px-5">
         <div class="flex flex-col md:flex-row gap-5 mb-10">
-            <div class="flex-1 bg-bg-banner text-white p-6 md:p-10 rounded-xl relative overflow-hidden">
+            <div class="flex-1 bg-bg-banner bg-cover bg-center bg-no-repeat text-white p-6 md:p-10 rounded-xl relative overflow-hidden" style="background-image: url('{{ asset('assets/img/bg.png') }}');">
                 <h2 class="text-xl md:text-3xl mb-2.5">Platform Terbaik untuk order Pastry & Bakery</h2>
-                <p class="text-sm text-border-dark md:mb-5">Nikmati Pastry & Bakery sesuai selera lidah dan dompetmu!</p>
-                <!-- <button class="btn-brown">Beli Sekarang</button> -->
+                <p class="text-sm text-white/80 md:mb-5">Nikmati Pastry & Bakery sesuai selera lidah dan dompetmu!</p>
             </div>
-            <div class="flex-1 bg-bg-banner text-white p-6 md:p-10 rounded-xl relative overflow-hidden">
+            <div class="flex-1 bg-bg-banner bg-cover bg-center bg-no-repeat text-white p-6 md:p-10 rounded-xl relative overflow-hidden" style="background-image: url('{{ asset('assets/img/bg.png') }}');">
                 <h2 class="text-xl md:text-3xl mb-2.5">Pastry unik Bakery menarik, seleramu pasti melirik!</h2>
-                <p class="text-sm text-border-dark md:mb-5 ">Ayo dapatkan aneka cemilan keseharianmu dari sekarang!</p>
-                <!-- <button class="btn-brown">Beli Sekarang</button> -->
+                <p class="text-sm text-white/80 md:mb-5 ">Ayo dapatkan aneka cemilan keseharianmu dari sekarang!</p>
             </div>
         </div>
 
         
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-10">
-            @foreach($products as $p)
+        <div class="flex justify-center items-center mb-6 gap-3">
+            <i class="fa-solid fa-cookie-bite text-3xl md:text-4xl" style="color: #fd4b82;"></i>
+            <h3 class="text-black text-3xl md:text-4xl font-extrabold m-0">{{ $judul }}</h3>
+        </div>
+        <div class="bg-primary-brown p-5 md:p-8 rounded-xl mb-10">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+                @foreach($products as $p)
                 <div class="bg-white rounded-xl shadow-sm border border-border-cream flex flex-col h-full">
                     <div class="flex justify-between pt-3 md:pt-5 px-3 md:px-8 pb-0">
                         <div class="title-cat w-full">
@@ -38,9 +41,7 @@
                     </div>
                 </div>
             @endforeach
-        </div>
-        <div class="flex justify-center items-center mb-5">
-            <h3 class="text-text-darker text-3xl font-extrabold">{{ $judul }}</h3>
+            </div>
         </div>
     </main>
     

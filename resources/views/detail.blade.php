@@ -2,6 +2,11 @@
 
 @section('content')
     <main class="max-w-6xl my-10 mx-auto px-5 font-sans">
+        <div class="mb-6">
+            <button onclick="javascript:history.back()" class="bg-transparent border-none flex items-center gap-2 text-primary-brown font-bold text-base cursor-pointer transition-colors duration-300 hover:text-dark-brown">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+        </div>
         <section class="flex flex-col lg:flex-row gap-12 items-stretch lg:items-start mb-16">
             <div class="flex-1 bg-bg-gray-light rounded-xl flex justify-center items-center overflow-hidden w-full">
                 <img loading="lazy" id="product-img" src="{{ asset($kue->gambar) }}" alt="{{ $kue->nama }}" class="w-full max-h-125 object-cover rounded-xl">

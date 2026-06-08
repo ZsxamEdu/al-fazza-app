@@ -19,7 +19,7 @@
         
         <p>Untuk melihat rincian pesanan secara lengkap, silakan klik tombol di bawah ini:</p>
         
-        <a href="{{ url('/checkout/invoice/' . $transaction->invoice_number) }}" style="display: block; width: 100%; text-align: center; background: #a67c52; color: white; padding: 12px 0; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px; box-sizing: border-box;">
+        <a href="{{ url('/checkout/invoice/' . $transaction->invoice_number . '?token=' . $transaction->token) }}" style="display: block; width: 100%; text-align: center; background: #a67c52; color: white; padding: 12px 0; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 20px; box-sizing: border-box;">
             Lihat Invoice Anda
         </a>
         

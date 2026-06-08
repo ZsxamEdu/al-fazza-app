@@ -17,7 +17,7 @@ class ReviewController extends Controller
 
         // Hanya pesanan yang sudah selesai yang bisa di-review
         if ($transaction->order_status !== 'selesai') {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Pesanan belum selesai, tidak dapat memberikan ulasan.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Pesanan belum selesai, tidak dapat memberikan ulasan.');
         }
 
         // Cek apakah produk ini ada di transaksi tersebut
@@ -26,7 +26,7 @@ class ReviewController extends Controller
             ->exists();
 
         if (!$detailExists) {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Produk tidak ditemukan pada transaksi ini.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Produk tidak ditemukan pada transaksi ini.');
         }
 
         // Cek apakah ulasan sudah pernah diberikan
@@ -35,7 +35,7 @@ class ReviewController extends Controller
             ->exists();
 
         if ($reviewExists) {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Anda sudah memberikan ulasan untuk produk ini.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Anda sudah memberikan ulasan untuk produk ini.');
         }
 
         return view('review.create', compact('transaction', 'product'));
@@ -52,7 +52,7 @@ class ReviewController extends Controller
         $product = Product::findOrFail($product_id);
 
         if ($transaction->order_status !== 'selesai') {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Pesanan belum selesai, tidak dapat memberikan ulasan.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Pesanan belum selesai, tidak dapat memberikan ulasan.');
         }
 
         $detailExists = TransactionDetail::where('transaction_id', $transaction->id)
@@ -60,7 +60,7 @@ class ReviewController extends Controller
             ->exists();
 
         if (!$detailExists) {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Produk tidak ditemukan pada transaksi ini.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Produk tidak ditemukan pada transaksi ini.');
         }
 
         $reviewExists = Review::where('transaction_id', $transaction->id)
@@ -68,7 +68,7 @@ class ReviewController extends Controller
             ->exists();
 
         if ($reviewExists) {
-            return redirect()->route('checkout.invoice', $invoice)->with('error', 'Anda sudah memberikan ulasan untuk produk ini.');
+            return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('error', 'Anda sudah memberikan ulasan untuk produk ini.');
         }
 
         // Simpan review
@@ -85,6 +85,6 @@ class ReviewController extends Controller
             'rating' => round($averageRating, 1) // simpan dalam 1 angka desimal
         ]);
 
-        return redirect()->route('checkout.invoice', $invoice)->with('success', 'Terima kasih! Ulasan Anda telah disimpan.');
+        return redirect()->route('checkout.invoice', ['invoice' => $invoice, 'token' => $transaction->token])->with('success', 'Terima kasih! Ulasan Anda telah disimpan.');
     }
 }

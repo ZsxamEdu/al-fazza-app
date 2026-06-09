@@ -8,6 +8,10 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logo.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script type="text/javascript"
+            src="{{ config('midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+            data-client-key="{{ config('midtrans.client_key') }}"></script>
 </head>
 <body class="bg-bg-gray flex flex-col h-screen overflow-hidden">
 
@@ -101,8 +105,7 @@
                 <label class="block font-bold mb-1">Metode Pembayaran</label>
                 <select id="modal-method" class="w-full py-3 px-5 border border-border-medium rounded-lg text-base outline-none transition duration-300 focus:border-primary-brown focus:ring-2 focus:ring-primary-brown/20 mb-0" onchange="toggleCashInput()">
                     <option value="Cash">Tunai (Cash)</option>
-                    <option value="QRIS">QRIS</option>
-                    <option value="Transfer">Transfer Bank</option>
+                    <option value="Transfer">Transfer / QRIS (Midtrans)</option>
                 </select>
             </div>
 
@@ -135,7 +138,7 @@
 
             <div class="flex justify-end gap-2.5">
                 <button type="button" class="bg-gray-400 text-white border-none py-2 px-6 rounded cursor-pointer font-bold transition duration-300 hover:bg-gray-500" onclick="closeModal()">Batal</button>
-                <button type="button" class="w-auto py-2.5 px-5 bg-text-success text-white border-none rounded-lg font-bold cursor-pointer transition duration-300 hover:bg-success" onclick="submitFinalPayment()">Bayar & Simpan</button>
+                <button type="button" id="btn-submit-payment" class="w-auto py-2.5 px-5 bg-text-success text-white border-none rounded-lg font-bold cursor-pointer transition duration-300 hover:bg-success" onclick="submitFinalPayment()">Bayar & Simpan</button>
             </div>
         </div>
     </div>

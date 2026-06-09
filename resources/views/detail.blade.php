@@ -24,7 +24,7 @@
                     <button class="bg-text-darker text-white py-3 md:px-[25%] lg:px-10 border-none rounded-lg font-bold text-base cursor-pointer transition-colors duration-300 hover:bg-neutral-700 w-full md:w-auto" onclick="let qty = parseInt(document.getElementById('qty').value) || 1; addToCart('{{ $kue->id }}', '{{ $kue->nama }}', {{ $kue->harga }}, '{{ asset($kue->gambar) }}', qty, {{ $kue->stok }})">Tambahkan ke Keranjang</button>
                     <div class="flex items-center border border-border-dark rounded-lg overflow-hidden w-full md:w-auto justify-center md:justify-start">
                         <button class="bg-white border-none py-3 px-4 cursor-pointer text-lg" onclick="changeQty(-1)">-</button>
-                        <input type="number" id="qty" value="1" min="1" max="{{ $kue->stok }}" class="w-10 h-12 text-center border-none text-lg outline-none">
+                        <input type="number" id="qty" value="1" min="1" max="{{ $kue->stok }}" oninput="if(parseInt(this.value) > parseInt(this.max)) this.value = this.max;" class="w-10 h-12 text-center border-none text-lg outline-none">
                         <button class="bg-white border-none py-3 px-4 cursor-pointer text-lg" onclick="changeQty(1)">+</button>
                     </div>
                 </div>

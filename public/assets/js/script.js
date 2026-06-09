@@ -258,7 +258,7 @@ function updateCartUI() {
 
                     <div class="flex items-center gap-2.5 ml-auto mr-8">
                         <button type="button" onclick="kurangiQty(${index})" class="w-6 h-6 border border-border-dark bg-white rounded cursor-pointer flex justify-center items-center hover:bg-gray-100">-</button>
-                        <input type="number" min="1" max="${item.stok || 9999}" value="${item.quantity}" onchange="setCartQty(${index}, this.value)" class="w-10 h-7 text-center border border-border-dark rounded text-sm font-bold outline-none focus:border-primary-brown">
+                        <input type="number" min="1" max="${item.stok || 9999}" value="${item.quantity}" oninput="if(parseInt(this.value) > parseInt(this.max)) this.value = this.max;" onchange="setCartQty(${index}, this.value)" class="w-10 h-7 text-center border border-border-dark rounded text-sm font-bold outline-none focus:border-primary-brown">
                         <button type="button" onclick="tambahQty(${index})" class="w-6 h-6 border border-border-dark bg-white rounded cursor-pointer flex justify-center items-center hover:bg-gray-100">+</button>
                     </div>
 
@@ -668,7 +668,7 @@ function renderPosCart() {
                 </div>
                 <div class="flex items-center gap-2">
                     <button class="bg-bg-light border-none w-6 h-6 rounded-full cursor-pointer font-bold hover:bg-border-medium transition" onclick="changePosQty(${item.id}, -1)">-</button>
-                    <input type="number" min="1" max="${item.stok}" value="${item.qty}" onchange="setPosQty(${item.id}, this.value)" class="w-12 h-7 text-center border border-border-dark rounded text-sm font-bold outline-none focus:border-primary-brown">
+                    <input type="number" min="1" max="${item.stok}" value="${item.qty}" oninput="if(parseInt(this.value) > parseInt(this.max)) this.value = this.max;" onchange="setPosQty(${item.id}, this.value)" class="w-12 h-7 text-center border border-border-dark rounded text-sm font-bold outline-none focus:border-primary-brown">
                     <button class="bg-bg-light border-none w-6 h-6 rounded-full cursor-pointer font-bold hover:bg-border-medium transition" onclick="changePosQty(${item.id}, 1)">+</button>
                 </div>
                 <div class="font-bold">Rp ${subtotal.toLocaleString('id-ID')}</div>

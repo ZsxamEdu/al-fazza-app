@@ -45,16 +45,30 @@ class KasirController extends Controller
             'customer_name' => 'Pelanggan Toko',
         ];
 
+        $paymentStatus = ($request->payment_method === 'Cash') ? 'success' : 'pending';
+
         $result = $this->checkoutService->processCheckout(
             $cartData,
             $customerData,
             'kasir',
             $request->payment_method,
             $request->amount_paid,
-            $request->change_amount, // The service doesn't fully validate this right now, we can pass it
-            'success'
+            $request->change_amount,
+            $paymentStatus
         );
 
+        // Request Midtrans
+        if ($request->ajax() || $request->wantsJson()) {
+            if (!$result['success']) {
+                return response()->json(['error' => $result['message']], 500);
+            }
+            return response()->json([
+                'snap_token' => $result['snap_token'],
+                'transaction_id' => $result['transaction']->id
+            ]);
+        }
+
+        // Request Cash
         if (!$result['success']) {
             return redirect()->back()->with('error', $result['message']);
         }

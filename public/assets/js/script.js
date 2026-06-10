@@ -733,6 +733,8 @@ function openModal() {
     document.getElementById('modal-total-text').textContent = 'Rp ' + posGrandTotal.toLocaleString('id-ID');
     
     // Reset form modal
+    document.getElementById('modal-method').disabled = false;
+    document.getElementById('modal-method').value = 'Cash';
     document.getElementById('modal-paid').value = '';
     document.getElementById('modal-change').value = 'Rp 0';
     toggleCashInput();
@@ -749,31 +751,30 @@ function closeModal() {
 function toggleCashInput() {
     const method = document.getElementById('modal-method').value;
     const cashGroup = document.getElementById('cash-input-group');
-    
-    // Elemen tambahan untuk Non-Tunai
     const nonCashInfo = document.getElementById('non-cash-info');
-    const qrisImg = document.getElementById('qris-image');
-    const transferInfo = document.getElementById('transfer-info');
-    const instruction = document.getElementById('payment-instruction');
+    const btnSubmit = document.getElementById('btn-submit-payment');
+
+    // Kosongkan layar embed tiap ganti metode
+    nonCashInfo.innerHTML = ''; 
 
     if (method === 'Cash') {
         cashGroup.style.display = 'block';
-        nonCashInfo.style.display = 'none'; // Sembunyikan info qris/transfer
+        nonCashInfo.style.display = 'none'; 
+        if (btnSubmit) {
+            btnSubmit.style.display = 'block';
+            btnSubmit.innerHTML = 'Bayar & Simpan';
+        }
     } else {
         cashGroup.style.display = 'none';
         document.getElementById('modal-change').value = 'Rp 0';
         document.getElementById('modal-paid').value = ''; 
         
-        nonCashInfo.style.display = 'block'; // Tampilkan kotak peringatan mutasi
-
-        if (method === 'QRIS') {
-            instruction.textContent = "Silakan scan QRIS berikut:";
-            qrisImg.style.display = 'block';
-            transferInfo.style.display = 'none';
-        } else if (method === 'Transfer') {
-            instruction.textContent = "Silakan transfer ke rekening berikut:";
-            qrisImg.style.display = 'none';
-            transferInfo.style.display = 'block';
+        nonCashInfo.style.display = 'block'; 
+        nonCashInfo.innerHTML = '<p class="text-sm mb-0">Klik tombol di bawah untuk memunculkan QRIS/Transfer Bank.</p><div id="snap-container" class="mt-3"></div>';
+        
+        if (btnSubmit) {
+            btnSubmit.style.display = 'block';
+            btnSubmit.innerHTML = '<i class="fa-solid fa-qrcode"></i> Buat Kode Bayar Midtrans';
         }
     }
 }
@@ -785,10 +786,10 @@ function calculateChange() {
     
     if (change >= 0) {
         document.getElementById('modal-change').value = 'Rp ' + change.toLocaleString('id-ID');
-        document.getElementById('modal-change').style.color = '#388e3c'; // Hijau kalau cukup
+        document.getElementById('modal-change').style.color = '#388e3c'; 
     } else {
         document.getElementById('modal-change').value = 'Uang Kurang!';
-        document.getElementById('modal-change').style.color = '#d32f2f'; // Merah kalau kurang
+        document.getElementById('modal-change').style.color = '#d32f2f'; 
     }
 }
 
@@ -796,27 +797,80 @@ function submitFinalPayment() {
     const method = document.getElementById('modal-method').value;
     let paid = parseInt(document.getElementById('modal-paid').value) || 0;
     
-    // Kalau bayar cash, uang tidak boleh kurang
     if (method === 'Cash' && paid < posGrandTotal) {
         return Swal.fire({ icon: 'warning', text: 'Nominal uang yang dibayarkan kurang dari total tagihan!' });
     }
 
-    // Kalau bukan cash, anggap uang pas
-    if (method !== 'Cash') {
-        paid = posGrandTotal; 
-    }
+    let finalPaid = method === 'Cash' ? paid : posGrandTotal;
+    let change = method === 'Cash' ? paid - posGrandTotal : 0;
 
-    let change = paid - posGrandTotal;
-
-    // Masukkan data ke form tersembunyi
     document.getElementById('cart-data-input').value = JSON.stringify(posCart);
     document.getElementById('input-method').value = method;
-    document.getElementById('input-paid').value = paid;
+    document.getElementById('input-paid').value = finalPaid;
     document.getElementById('input-change').value = change;
 
-    // Submit form
-    showLoader();
-    document.getElementById('form-pos').submit();
+    if (method === 'Cash') {
+        showLoader();
+        document.getElementById('form-pos').submit();
+    } else {
+        // Mode Transfer Midtrans
+        const btnSubmit = document.getElementById('btn-submit-payment');
+        const snapContainer = document.getElementById('snap-container');
+        
+        btnSubmit.style.display = 'none';
+        document.getElementById('modal-method').disabled = true; // dropdown mati
+        
+        snapContainer.innerHTML = '<div class="text-center py-5"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-primary-brown mb-3"></i><br><strong>Menghubungkan ke server Midtrans...</strong></div>';
+
+        let csrfToken = document.querySelector('meta[name="csrf-token"]');
+        
+        fetch("/kasir/proses", {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json", 
+                "Accept": "application/json", 
+                "X-CSRF-TOKEN": csrfToken.getAttribute('content') 
+            },
+            body: JSON.stringify({
+                cart_data: JSON.stringify(posCart),
+                payment_method: method,
+                amount_paid: finalPaid,
+                change_amount: change
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.snap_token) {
+                snapContainer.innerHTML = '';
+                snapContainer.style = 'width: 100%; border-radius: 10px; overflow: hidden; border: 1px solid #e0e0e0; min-height: 350px;';
+                
+                window.snap.embed(data.snap_token, {
+                    embedId: 'snap-container',
+                    onSuccess: function(result) {
+                        window.location.href = "/kasir/selesai/" + data.transaction_id;
+                    },
+                    onPending: function(result) {
+                        window.location.href = "/kasir/selesai/" + data.transaction_id;
+                    },
+                    onError: function(result) {
+                        Swal.fire({ icon: 'error', text: 'Pembayaran gagal!' });
+                        btnSubmit.style.display = 'block';
+                        document.getElementById('modal-method').disabled = false;
+                    }
+                });
+            } else {
+                snapContainer.innerHTML = '<p class="text-danger font-bold text-center">Gagal memuat token Midtrans.</p>';
+                btnSubmit.style.display = 'block';
+                document.getElementById('modal-method').disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            snapContainer.innerHTML = '<p class="text-danger font-bold text-center">Terjadi kesalahan koneksi server. Stok mungkin habis.</p>';
+            btnSubmit.style.display = 'block';
+            document.getElementById('modal-method').disabled = false;
+        });
+    }
 }
 
 // ==========================================

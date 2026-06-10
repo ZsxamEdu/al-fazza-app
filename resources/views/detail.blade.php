@@ -17,6 +17,7 @@
                     <h1 class="m-0 text-4xl text-black">{{ $kue->nama }}</h1>
                 </div>
                 <p class="text-text-muted mb-4 text-bas e">{{ $kue->nama }} - {{ $kue->tipe }}</p>
+                <p class="text-text-muted mb-4 text-bas e">stok: {{ $kue->stok }}</p>
                 <h2 class="text-3xl font-bold mb-6 text-black">Rp {{ number_format($kue->harga, 0, ',', '.') }}</h2>
 
                 <div class="flex flex-col md:flex-row gap-4 mb-8 justify-between w-full lg:items-center">

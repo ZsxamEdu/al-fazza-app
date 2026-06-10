@@ -19,7 +19,8 @@
                     
                     <div class="flex-1 min-w-48 mb-4">
                         <label class="block mb-1.5 font-medium text-sm">No. WhatsApp *</label>
-                        <input type="tel" id="nohp" required placeholder="Contoh: 081234567890" class="form-input">
+                        <input type="tel" id="nohp" required placeholder="Contoh: 081234567890" class="form-input" maxlength="13" oninput="updateCharCount('nohp', 13)">
+                        <div class="text-right text-xs text-gray-400 mt-1"><span id="nohp-count">0</span>/13 karakter</div>
                     </div>
                 </div>
 
@@ -92,5 +93,14 @@
                 renderCheckoutSummary();
             }
         });
+        const noHpInput = document.getElementById('nohp');
+
+        if (noHpInput) {
+            // Event 'input' berjalan setiap kali ada karakter yang diketik
+            noHpInput.addEventListener("input", function (e) {
+                // Hapus SEMUA karakter selain angka (0-9) secara instan
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
     </script>
 @endsection

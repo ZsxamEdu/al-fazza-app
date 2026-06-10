@@ -887,6 +887,12 @@ function payNow() {
         return;
     }
 
+    if (noHp.trim().length > 15) {
+        Swal.fire({ icon: 'warning', text: 'Detail Alamat terlalu panjang! Maksimal 300 karakter.' });
+        document.getElementById('nohp').focus();
+        return;
+    }
+
     // Validasi Catatan: maksimal 200 karakter (ambil nilai sekarang)
     let catatanVal = document.getElementById('catatan')?.value || '';
     if (catatanVal.trim().length > 200) {

@@ -37,7 +37,7 @@ class ProcessCheckoutRequest extends FormRequest
             'customer_email.required' => 'Email wajib diisi.',
             'customer_email.email' => 'Format email tidak valid.',
             'customer_phone.required' => 'Nomor WhatsApp wajib diisi.',
-            'customer_phone.regex' => 'Nomor HP hanya boleh berisi angka (10–13 digit).',
+            'customer_phone.regex' => 'Nomor HP hanya boleh berisi angka (10-13 digit).',
             'delivery_date.required' => 'Tanggal pengiriman wajib diisi.',
             'delivery_address.required' => 'Alamat pengiriman wajib diisi.',
             'delivery_address.max' => 'Detail alamat maksimal 300 karakter.',
